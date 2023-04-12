@@ -1,11 +1,11 @@
 <template>
   <div class="sidebar" :class="{ open: isSidebarOpen }">
-    <div class="sidebar__menu">
+    <div class="sidebar__nav">
       <span
         v-for="(n, i) of icons"
         :key="i"
-        @click="toggleSidebar"
-        class="sidebar__menu-item sidebar-icon material-symbols-outlined"
+        @click="openSidebar(n)"
+        class="sidebar__nav-item sidebar-icon material-symbols-outlined"
       >
         {{ n }}
       </span>
@@ -20,7 +20,11 @@
           arrow_back_ios_new
         </span>
       </div>
-      <div class="sidebar__body"></div>
+      <!-- <SidebarBody /> -->
+      <div class="sidebar__body">
+        <Menu v-show="tab === 'menu'" />
+        <Search v-show="tab === 'search'" />
+      </div>
     </div>
   </div>
 </template>
@@ -29,12 +33,19 @@
 import { storeToRefs } from "pinia";
 import { useGlobalStore } from "~/store/global";
 
+const route = useRoute();
 const store = useGlobalStore();
 
 const { toggleSidebar } = store;
 const { isSidebarOpen } = storeToRefs(store);
 
 const icons = ["menu", "search", "route"];
+const tab = computed(() => route.query.tab);
+
+const openSidebar = (query) => {
+  setRouteQuery("tab", query);
+  toggleSidebar();
+};
 </script>
 
 <style lang="scss" scoped>
@@ -99,12 +110,12 @@ $elevation: 0 1px 2px rgba(0, 0, 0, 0.3), 0 2px 6px 2px rgba(0, 0, 0, 0.15);
       left: 0;
     }
 
-    .sidebar__menu {
+    .sidebar__nav {
       opacity: 0;
     }
   }
 
-  &__menu {
+  &__nav {
     padding: 12px;
 
     &-item {

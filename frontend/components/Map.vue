@@ -4,15 +4,18 @@
 
 <script setup>
 import { onMounted } from "vue";
-import axios from "axios";
 import mapboxgl from "mapbox-gl";
+
 import { storeToRefs } from "pinia";
 import { useGlobalStore } from "~/store/global";
+import { useMapStore } from "~/store/map";
 
 const store = useGlobalStore();
-
 const { toggleSidebar } = store;
 const { isSidebarOpen } = storeToRefs(store);
+
+const mapStore = useMapStore();
+const { setMap } = mapStore;
 
 const config = useRuntimeConfig();
 
@@ -20,6 +23,8 @@ const { MAPBOX_ACCESS_TOKEN } = config.public;
 
 onMounted(async () => {
   const map = await createMap();
+
+  setMap(map);
 
   map.on("click", () => {
     if (isSidebarOpen.value) {

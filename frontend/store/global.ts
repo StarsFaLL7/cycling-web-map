@@ -9,6 +9,10 @@ export const useGlobalStore = defineStore({
   },
   actions: {
     toggleSidebar() {
+      if (this.sidebarOpen) {
+        clearRoute();
+      }
+
       this.$patch({
         sidebarOpen: !this.sidebarOpen,
       });
