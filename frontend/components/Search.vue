@@ -2,7 +2,7 @@
   <div class="sidebar__search">
     <div class="search__block">
       <div class="search__block-item" v-for="(n, i) of inputs" :key="n">
-        <GeoInput ref="data" />
+        <GeoInput ref="data" :zIndex="zIndexLimit - i" />
         <button
           class="search__block-btn"
           :class="{
@@ -31,6 +31,7 @@ import { storeToRefs } from "pinia";
 import { useMapStore } from "~/store/map";
 
 const routeMarkers = ref([]);
+const zIndexLimit = 1000;
 
 const store = useMapStore();
 
@@ -53,10 +54,12 @@ const decrement = (i) => {
   routeMarkers.value.map((m) => m.remove());
   routeMarkers.value = [];
 
-  map.value.setLayoutProperty("theRoute", "visibility", "hidden");
+  map.value.setLayoutProperty("theRoute", "visibility", "none");
 };
 
 const makeRoute = async () => {
+  if (data.value.map((el) => el.result)?.length < 2) return;
+
   const markersQuery = markers.value
     .map((m) => getMarkerCoords(m).join(","))
     .join(";");
@@ -100,10 +103,9 @@ const getMarkerCoords = (marker) => {
       margin-bottom: 10px;
       & .geo-input {
         width: 100%;
-
         .mapboxgl-ctrl-geocoder {
-          max-width: calc(100% - 46px);
-          width: 100%;
+          min-width: 100%;
+          // max-width: calc(100% - 46px);
         }
       }
     }

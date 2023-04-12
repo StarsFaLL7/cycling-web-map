@@ -19,16 +19,28 @@ const { markers, map } = storeToRefs(store);
 
 const el = ref();
 
+const { zIndex } = defineProps(["zIndex"]);
+
 const geocoder = new MapboxGeocoder({
   accessToken: MAPBOX_ACCESS_TOKEN,
   language: "ru",
+  autocomplete: true,
+  countries: "ru",
+  bbox: [60.1042, 56.6342, 61.0479, 57.0652],
   placeholder: "Введите адрес",
-  types: "country,region,place,postcode,locality,neighborhood,address",
+  routing: true,
+  worldview: "ru",
+  fuzzyMatch: true,
+  proximity: {
+    longitude: 60.60825,
+    latitude: 56.839104,
+  },
 });
 
 const result = ref();
 
 geocoder.on("result", (e) => {
+  console.log(e.result.center);
   removeMarker(result.value?.center);
 
   const marker = new mapboxgl.Marker()
@@ -41,6 +53,7 @@ geocoder.on("result", (e) => {
 
 onMounted(() => {
   geocoder.addTo(el.value);
+  geocoder.container.style.zIndex = zIndex;
 });
 
 defineExpose({
@@ -50,10 +63,10 @@ defineExpose({
 
 <style lang="scss">
 .mapboxgl-ctrl-geocoder {
-  min-width: 100%;
+  //   min-width: 100%;
 
   .suggestions {
-    position: relative;
+    // position: relative;
   }
 }
 </style>
