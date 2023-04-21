@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Map ref="map" />
+    <HomeBanner />
   </div>
 </template>
 

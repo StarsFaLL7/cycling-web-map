@@ -1,10 +1,9 @@
 <template>
   <div>
-    <Nav />
-    <slot />
+    <Map ref="map" />
   </div>
 </template>
 
 <script setup></script>
 
-<style></style>
+<style lang="scss" scoped></style>

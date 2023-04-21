@@ -24,7 +24,9 @@ const { MAPBOX_ACCESS_TOKEN } = config.public;
 onMounted(async () => {
   const map = await createMap();
 
-  setMap(map);
+  if (!mapStore.map) {
+    setMap(map);
+  }
 
   map.on("click", () => {
     if (isSidebarOpen.value) {
@@ -32,26 +34,14 @@ onMounted(async () => {
     }
   });
 
-  // map.on("style.load", async () => {
-  // const p1 = [60.61869351127328, 56.827530289345844].join(",");
-  // const p2 = [60.60498042012503, 56.82589910816674].join(",");
-  // const p3 = [60.61437132100471, 56.82953224954301].join(",");
-  // const res = await axios.get(
-  //   `https://api.mapbox.com/directions/v5/mapbox/cycling/${p1};${p3};${p2}?alternatives=true&geometries=geojson&access_token=pk.eyJ1Ijoic2hpcm93YXlmeSIsImEiOiJjbGZ5M2EwNHIwaXZrM2VwaHVnN3JubjdlIn0.fUViaabp3gXDmKj9RfblVQ`
-  // );
-  // for (const el of res.data.waypoints) {
-  //   new mapboxgl.Marker({ color: "red" }).setLngLat(el.location).addTo(map);
-  // }
-  // const popup = new mapboxgl.Popup({ closeOnClick: false })
-  //   .setLngLat([60.59450399034171, 56.82120551155373])
-  //   .setHTML("<h1>Hello World!</h1>")
-  //   .addTo(map);
-  // map.getSource("theRoute").setData(res.data.routes[0].geometry);
-  // });
+  map.once("style.load", () => {
+    map.resize();
+  });
 });
 
 async function createMap() {
   mapboxgl.accessToken = MAPBOX_ACCESS_TOKEN;
+
   let map = new mapboxgl.Map({
     container: "map",
     // style: "mapbox://styles/shirowayfy/clfzhtq3h002g01p6uubcw8yb",

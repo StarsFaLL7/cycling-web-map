@@ -45,6 +45,10 @@ const increment = () => {
   if (data.value[data.value.length - 1].result) {
     inputs.value.push(inputs.value[inputs.value.length - 1] + 1);
   }
+
+  new mapboxgl.Marker({ color: "red" })
+    .setLngLat([56.846821011697735, 60.61435983908434].reverse())
+    .addTo(map.value);
 };
 
 const decrement = (i) => {
