@@ -15,6 +15,7 @@
     "sass-loader": "^13.2.2"
   },
   "dependencies": {
+    "@heroicons/vue": "^2.0.17",
     "@mapbox/mapbox-gl-geocoder": "^5.0.1",
     "@pinia/nuxt": "^0.4.7",
     "animate.css": "^4.1.1",

@@ -23,8 +23,12 @@ li {
     color: inherit;
 
     text-decoration: none;
-    font-size: 20px;
+    font-size: 18px;
     font-family: "Nunito";
+
+    &:hover {
+      text-decoration: underline;
+    }
   }
 }
 </style>
