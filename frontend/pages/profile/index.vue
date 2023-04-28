@@ -5,7 +5,7 @@
       alt=""
       class="profile__banner"
     />
-    <div class="profile__header">
+    <div class="profile__header container">
       <div class="profile__avatar">
         <div class="profile__avatar-wrapper">
           <img
@@ -59,15 +59,17 @@
         </li>
       </ul>
     </div>
-    <div class="profile__content">
-      <h1 class="profile__title">Последние маршруты</h1>
-      <div class="profile__routes">
-        <div class="profile__route" v-for="i of 5">
-          <img src="https://i.ibb.co/mFMq256/image-23.png" alt="" />
-          <div class="profile__route-address">
-            <span>Ленина 12</span>
-            <div></div>
-            <span>Малышева 21Б</span>
+    <div class="container">
+      <div class="profile__content">
+        <h1 class="profile__title">Последние маршруты</h1>
+        <div class="profile__routes">
+          <div class="profile__route" v-for="i of 5" :key="i">
+            <img src="https://i.ibb.co/mFMq256/image-23.png" alt="" />
+            <div class="profile__route-address">
+              <span>Ленина 12</span>
+              <div></div>
+              <span>Малышева 21Б</span>
+            </div>
           </div>
         </div>
       </div>
@@ -103,19 +105,19 @@ import {
     display: flex;
     gap: 40px;
 
-    padding: 0 80px;
     margin-bottom: 30px;
   }
 
   &__avatar {
     position: relative;
-    width: 280px;
-    height: 20px;
+    width: 250px;
 
     &-wrapper {
+      width: 250px;
+      height: 250px;
+
       position: absolute;
-      width: 280px;
-      height: 280px;
+      bottom: 0;
 
       border-radius: 50%;
       box-shadow: 0px 0px 8px 0px rgba(34, 60, 80, 0.2);
@@ -124,7 +126,7 @@ import {
       background: #fff;
 
       padding: 15px;
-      transform: translateY(-50%);
+      // transform: translateY(-50%);
     }
 
     img {
@@ -218,8 +220,7 @@ import {
   }
 
   &__content {
-    background: #f6f6f6;
-    padding: 30px 80px 70px; //CHANGE
+    padding: 30px 0 70px; //CHANGE
     height: max-content;
   }
 

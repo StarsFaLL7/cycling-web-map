@@ -25,6 +25,12 @@ body {
   box-sizing: border-box;
 }
 
+.container {
+  max-width: 1920px;
+  margin: 0 auto;
+  padding: 0 80px;
+}
+
 .btn {
   padding: 14px 20px;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);

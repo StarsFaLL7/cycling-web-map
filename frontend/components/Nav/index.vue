@@ -1,11 +1,13 @@
 <template>
   <nav class="nav">
-    <LogoSite />
-    <ul class="nav__menu">
-      <NavLink title="Главная" href="/" />
-      <NavLink title="Карта" href="/map" />
-      <NavLink title="Личный кабинет" href="/profile" />
-    </ul>
+    <div class="container">
+      <LogoSite />
+      <ul class="nav__menu">
+        <NavLink title="Главная" href="/" />
+        <NavLink title="Карта" href="/map" />
+        <NavLink title="Личный кабинет" href="/profile" />
+      </ul>
+    </div>
   </nav>
 </template>
 
@@ -14,7 +16,7 @@
 <style lang="scss" scoped>
 .nav {
   width: 100%;
-  padding: 20px;
+  padding: 20px 0;
   background: #fff;
 
   position: absolute;
@@ -22,9 +24,11 @@
   top: 0;
   left: 0;
 
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  .container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
 
   &__menu {
     display: flex;

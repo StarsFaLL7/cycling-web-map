@@ -1,6 +1,7 @@
 <template>
   <div>
     <Map ref="map" />
+    <MapSearch />
   </div>
 </template>
 
