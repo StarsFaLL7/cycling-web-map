@@ -2,12 +2,7 @@
   <div class="profile__routes">
     <div class="profile__routes-items">
       <div class="profile__route" v-for="i of 4" :key="i">
-        <img src="https://i.ibb.co/mFMq256/image-23.png" alt="" />
-        <div class="profile__route-address">
-          <span>Ленина 12</span>
-          <div></div>
-          <span>Малышева 21Б</span>
-        </div>
+        <img src="https://picsum.photos/200/200" alt="" />
       </div>
     </div>
   </div>
