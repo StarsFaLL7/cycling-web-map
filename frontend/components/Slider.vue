@@ -66,7 +66,7 @@ const props = defineProps({
     default: false,
   },
   slidesPerGroup: {
-    type: Boolean,
+    type: Number,
     default: 1,
   },
 });
