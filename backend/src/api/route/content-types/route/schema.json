@@ -4,8 +4,7 @@
   "info": {
     "singularName": "route",
     "pluralName": "routes",
-    "displayName": "Route",
-    "description": ""
+    "displayName": "Route"
   },
   "options": {
     "draftAndPublish": true
