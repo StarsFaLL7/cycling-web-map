@@ -1,6 +1,9 @@
 <template>
   <div>
     <HomeBanner />
+    <HomeRoutes />
+    <HomeAdvantages />
+    <HomeMotivation />
   </div>
 </template>
 

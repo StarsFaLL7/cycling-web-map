@@ -2,9 +2,11 @@
   <div class="profile__stats">
     <div class="profile__stats-text">Активность 1 мая 2023 - 31 мая 2023</div>
     <div class="profile__stats-chart" :key="datasetHidden">
-      <client-only>
-        <Line :data="data" :options="options" />
-      </client-only>
+      <div class="chart">
+        <client-only>
+          <Line :data="data" :options="options" />
+        </client-only>
+      </div>
       <div class="chart__controls">
         <button
           @click="showAllDatasets"
@@ -14,13 +16,13 @@
         </button>
         <button
           @click="hideDataset(0)"
-          :class="{ active: datasetHidden && datasetHidden !== 1 }"
+          :class="{ active: datasetHidden === 0 }"
         >
           Время
         </button>
         <button
           @click="hideDataset(1)"
-          :class="{ active: datasetHidden && datasetHidden !== 0 }"
+          :class="{ active: datasetHidden === 1 }"
         >
           Дистанция
         </button>
@@ -142,9 +144,11 @@ const showAllDatasets = () => {
 const hideDataset = (i) => {
   data.value.datasets[1 - i].hidden = false;
   data.value.datasets[i].hidden = true;
-  options.value.scales.y.title.text = i === 0 ? "Км" : "Часы";
+
+  options.value.scales.y.title.text = i === 1 ? "Км" : "Часы";
 
   datasetHidden.value = i;
+  console.log(datasetHidden.value);
 };
 </script>
 
@@ -157,11 +161,13 @@ const hideDataset = (i) => {
   }
 
   &-chart {
-    height: 300px;
+    .chart {
+      height: 300px;
+    }
 
     .chart__controls {
       display: flex;
-      justify-content: center;
+      // justify-content: center;
       gap: 20px;
       margin-top: 15px;
 
