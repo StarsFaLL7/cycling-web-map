@@ -20,7 +20,7 @@ const props = defineProps({
 <style lang="scss" scoped>
 li {
   a {
-    color: inherit;
+    color: #fff;
 
     text-decoration: none;
     font-size: 18px;

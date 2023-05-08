@@ -17,7 +17,7 @@
 .nav {
   width: 100%;
   padding: 20px 0;
-  background: #fff;
+  // background: #fff;
 
   position: absolute;
   z-index: 999999;

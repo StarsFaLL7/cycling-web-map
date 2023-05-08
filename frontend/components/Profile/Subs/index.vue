@@ -1,6 +1,6 @@
 <template>
   <div class="profile__subs">
-    <h3 class="profile__subs-title">Подписки</h3>
+    <h3 class="profile__subs-title">Последние маршруты</h3>
     <div class="profile__subs-items">
       <ProfileSubsItem v-for="i of 8" />
     </div>
@@ -12,11 +12,11 @@
 <style lang="scss" scoped>
 .profile {
   &__subs {
+    width: 35%;
     padding: 30px;
     background: #94cbea;
     box-shadow: 0px 0px 8px 2px rgba(34, 60, 80, 0.2);
     border-radius: 20px;
-    // width: 35%;
 
     //     background: rgba(148, 203, 234, 0.61);
     // border-radius: 16px;

@@ -28,7 +28,6 @@
   &-wrapper {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
   }
 
   &__content {

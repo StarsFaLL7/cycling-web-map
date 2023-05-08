@@ -8,28 +8,25 @@
     <div class="profile__header-inner container">
       <div class="profile__avatar">
         <div class="profile__avatar-wrapper">
-          <img
-            src="https://www.runtastic.com/blog/wp-content/uploads/2017/08/cycling-benefits-1200x800-1024x683.jpg"
-            alt=""
-          />
+          <img alt="" />
         </div>
       </div>
       <div class="profile__user-info">
-        <h1 class="profile__full-name">Данил Казаков</h1>
+        <h1 class="profile__full-name">Name Surname</h1>
         <p class="profile__status">
-          Ничто не сравнится с простым удовольствием от велопрогулки
+          Lorem ipsum, dolor sit amet consectetur adipisicing elit.
         </p>
         <ul class="profile__links">
           <li class="profile__link">
             <a href="#">
               <MapPinIcon />
-              <span>Екатеринбург</span></a
+              <span>City</span></a
             >
           </li>
           <li class="profile__link">
             <a href="#">
               <PaperAirplaneIcon style="transform: rotate(-45deg)" />
-              <span>telegram</span></a
+              <span>Telegram</span></a
             >
           </li>
           <!-- <li class="profile__link">
@@ -68,6 +65,7 @@ import {
   PaperAirplaneIcon,
   EnvelopeIcon,
 } from "@heroicons/vue/24/solid";
+
 import {
   FlagIcon,
   ClockIcon,
@@ -116,6 +114,7 @@ import {
       border-radius: 50%;
       object-fit: cover;
       object-position: center;
+      background: #095172;
     }
   }
 
@@ -128,6 +127,7 @@ import {
 
   &__full-name {
     margin: 0 0 15px;
+    font-size: 28px;
   }
 
   &__status {
