@@ -1,0 +1,16 @@
+{
+  "collectionName": "components_point_coords",
+  "info": {
+    "displayName": "coords",
+    "description": ""
+  },
+  "options": {},
+  "attributes": {
+    "lng": {
+      "type": "float"
+    },
+    "lat": {
+      "type": "float"
+    }
+  }
+}
