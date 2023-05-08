@@ -81,6 +81,26 @@
       "type": "relation",
       "relation": "oneToMany",
       "target": "api::achievement.achievement"
+    },
+    "avatar": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "telegram": {
+      "type": "string"
+    },
+    "status": {
+      "type": "text"
+    },
+    "city": {
+      "type": "string"
     }
   }
 }
