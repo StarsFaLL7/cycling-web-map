@@ -50,8 +50,7 @@ import { ClockIcon, MapIcon } from "@heroicons/vue/24/outline";
 
   .card__image {
     width: 100%;
-    height: 200px;
-    margin-bottom: 10px;
+    height: 100%;
 
     img {
       width: 100%;

@@ -5,7 +5,7 @@
       <ul class="nav__menu">
         <NavLink title="Главная" href="/" />
         <NavLink title="Карта" href="/map" />
-        <NavLink title="Профиль" href="/profile/stats" />
+        <NavLink title="Профиль" href="/profile" />
       </ul>
     </div>
   </nav>
