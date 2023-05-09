@@ -8,7 +8,7 @@
       <div class="profile__header">
         <div class="profile__header-avatar">
           <img
-            src="https://i.pinimg.com/280x280_RS/5d/6f/36/5d6f36c42533acb5831b7d56df5295ef.jpg"
+            src="https://media.kg-portal.ru/images/barnyard/barnyard_38.jpg"
             alt=""
           />
         </div>
@@ -157,6 +157,7 @@ const achievements = ref([
         object-position: center;
         border-radius: 50%;
         border: 1px solid #fff;
+        background: $green-300;
       }
     }
 
