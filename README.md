@@ -1,3 +1,5 @@
-# cycling-web-map
+# Карта Велопрогулок
+
 UrFU project 2023 by team Lunar Kitties
-[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy)
+
+Website - https://web-cycling-app.netlify.app
