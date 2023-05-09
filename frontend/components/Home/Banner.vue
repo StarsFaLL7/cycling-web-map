@@ -1,18 +1,5 @@
 <template>
   <div class="home__banner" ref="bannerEl">
-    <!-- <div class="container">
-      <div class="home__banner-inner">
-        <h1 class="home__banner-title">
-          Найди свой идеальный велосипедный маршрут
-        </h1>
-        <p class="home__banner-text"></p>
-      </div>
-      <img
-        src="~/assets/images/home-banner.png"
-        alt=""
-        class="home__banner-image"
-      />
-    </div> -->
     <div class="home__banner-inner">
       <h1 class="home__banner-title">
         Найди свой <span>идеальный</span> велосипедный маршрут
@@ -21,9 +8,6 @@
         class="arrow-down animate__animated floating animate__infinite"
         @click="scrollToNextSection"
       />
-      <!-- <button class="btn">
-        <nuxt-link to="/map"> Начать поездку</nuxt-link>
-      </button> -->
       <svg
         class="waves"
         xmlns="http://www.w3.org/2000/svg"
@@ -104,9 +88,13 @@ const scrollToNextSection = () => {
     // #94CBEA #6CB6E2 #095172
 
     // background: linear-gradient(60deg, #94cbea 0%, #095172 100%);
-    background-image: url(https://switchrpg.com/images/articles/botw/botw01.jpg);
+    background: $green-200
+      // url(https://switchrpg.com/images/articles/botw/botw01.jpg);
+      url(~/assets/images/bg.png);
+    // url(https://wallpapercave.com/dwp2x/wp4724352.jpg);
+    background-attachment: fixed;
     background-size: cover;
-    background-position: center;
+    background-position: center -200px;
     position: relative;
     height: 500px;
 
@@ -127,6 +115,10 @@ const scrollToNextSection = () => {
     margin: 0 0 50px;
     text-transform: uppercase;
     letter-spacing: 2px;
+
+    span {
+      // background: rgba(176, 212, 130, 0.9);
+    }
   }
 
   &-text {

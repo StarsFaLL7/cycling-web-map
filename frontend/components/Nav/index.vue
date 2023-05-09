@@ -5,7 +5,7 @@
       <ul class="nav__menu">
         <NavLink title="Главная" href="/" />
         <NavLink title="Карта" href="/map" />
-        <NavLink title="Личный кабинет" href="/profile/stats" />
+        <NavLink title="Профиль" href="/profile/stats" />
       </ul>
     </div>
   </nav>
@@ -17,7 +17,6 @@
 .nav {
   width: 100%;
   padding: 20px 0;
-  // background: #fff;
 
   position: absolute;
   z-index: 999999;

@@ -26,6 +26,10 @@ body {
   box-sizing: border-box;
 }
 
+*::selection {
+  background-color: rgba(176, 212, 130, 0.6) !important;
+}
+
 .container {
   max-width: 1600px;
   width: 100%;

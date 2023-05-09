@@ -21,13 +21,34 @@ const props = defineProps({
 li {
   a {
     color: #fff;
-
     text-decoration: none;
     font-size: 18px;
-    font-family: "Nunito";
+    font-family: "Exo 2";
+    text-transform: uppercase;
+    position: relative;
+    padding-bottom: 5px;
+
+    // padding: 5px 10px;
+    // border-radius: 10px;
+    // background: rgba(176, 212, 130, 0.4);
+
+    &::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      height: 2px;
+      background: $green-300;
+      transform: scaleX(0);
+      transition: all 0.2s;
+    }
 
     &:hover {
-      text-decoration: underline;
+      &::after {
+        transform: scaleX(1);
+        transition: all 0.2s;
+      }
     }
   }
 }
