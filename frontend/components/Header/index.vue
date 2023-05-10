@@ -11,22 +11,24 @@
             v-else
             title="Вход/Регистрация"
             href="/profile"
-            @click="authFormOpen = true"
+            @click="useToggleAuth"
           />
         </ul>
       </div>
     </nav>
-    <AuthForm :open="authFormOpen" @close-modal="authFormOpen = false" />
   </header>
 </template>
 
 <script setup>
 const user = useStrapiUser();
-
-const authFormOpen = ref(false);
 </script>
 
 <style lang="scss" scoped>
+header.green {
+  nav {
+    // background: rgba(61, 137, 52, 0.4);
+  }
+}
 .nav {
   width: 100%;
   padding: 20px 0;

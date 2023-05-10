@@ -20,6 +20,14 @@
     <button class="sidebar__search-btn" @click="makeRoute">
       Построить маршрут
     </button>
+    <div class="spacer"></div>
+    <button
+      class="sidebar__search-btn"
+      v-if="user && inputs.length > 1"
+      @click="saveRoute"
+    >
+      Сохарнить маршрут
+    </button>
   </div>
 </template>
 
@@ -29,6 +37,11 @@ import mapboxgl from "mapbox-gl";
 
 import { storeToRefs } from "pinia";
 import { useMapStore } from "~/store/map";
+import { useGlobalStore } from "~/store/global";
+
+const { toggleSidebar } = useGlobalStore();
+
+const user = useStrapiUser();
 
 const routeMarkers = ref([]);
 const zIndexLimit = 1000;
@@ -45,10 +58,6 @@ const increment = () => {
   if (data.value[data.value.length - 1].result) {
     inputs.value.push(inputs.value[inputs.value.length - 1] + 1);
   }
-
-  new mapboxgl.Marker({ color: "red" })
-    .setLngLat([56.846821011697735, 60.61435983908434].reverse())
-    .addTo(map.value);
 };
 
 const decrement = (i) => {
@@ -93,6 +102,13 @@ const getMarkerCoords = (marker) => {
   const { lng, lat } = marker._lngLat;
   return [lng, lat];
 };
+const currentRoute = useState("saveModalRoute");
+
+const saveRoute = () => {
+  toggleSidebar();
+  currentRoute.value = data.value;
+  useToggleSaveModal();
+};
 </script>
 
 <style lang="scss">
@@ -132,7 +148,7 @@ const getMarkerCoords = (marker) => {
 
       &.add {
         &:hover {
-          background: green;
+          background: $green-400;
           color: #fff;
         }
       }
@@ -146,6 +162,15 @@ const getMarkerCoords = (marker) => {
     }
   }
 
+  .spacer {
+    width: 100%;
+    height: 3px;
+    border-radius: 2px;
+    background: $green-400;
+    display: flex;
+    margin: 0 auto 15px;
+  }
+
   &-btn {
     border: none;
     border-radius: 4px;
@@ -156,8 +181,13 @@ const getMarkerCoords = (marker) => {
     cursor: pointer;
     transition: all 0.2s;
 
+    &:first-of-type {
+      margin-bottom: 15px;
+    }
+
     &:hover {
-      background: rgba(255, 255, 255, 0.2);
+      // background: rgba(255, 255, 255, 0.2);
+      background: $green-400;
       color: #fff;
     }
 

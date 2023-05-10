@@ -74,7 +74,7 @@ import { ClockIcon, MapIcon } from "@heroicons/vue/24/outline";
   .card__location {
     padding: 10px;
     width: 100%;
-    border-radius: 10px;
+    border-radius: 10px 10px 0 0;
     background: #fff;
     position: absolute;
     bottom: 0;

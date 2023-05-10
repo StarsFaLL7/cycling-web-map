@@ -55,6 +55,7 @@ export default defineNuxtConfig({
     expires: "7d",
     cookie: {
       sameSite: true,
+      httpOnly: false,
       path: "/",
     },
     cookieName: "strapi_jwt",

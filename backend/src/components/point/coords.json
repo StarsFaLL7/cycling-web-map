@@ -11,6 +11,9 @@
     },
     "lat": {
       "type": "float"
+    },
+    "streetName": {
+      "type": "string"
     }
   }
 }

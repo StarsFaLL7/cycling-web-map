@@ -2,6 +2,18 @@
   <div class="sidebar" :class="{ open: isSidebarOpen }">
     <div class="sidebar__nav">
       <span
+        class="sidebar__nav-item sidebar-icon material-symbols-outlined"
+        @click="navigateTo('/')"
+      >
+        home
+      </span>
+      <span
+        class="sidebar__nav-item sidebar-icon material-symbols-outlined"
+        @click="user ? navigateTo('/profile') : useToggleAuth()"
+      >
+        person
+      </span>
+      <span
         v-for="(n, i) of icons"
         :key="i"
         @click="openSidebar(n)"
@@ -12,7 +24,7 @@
     </div>
     <div class="sidebar__content">
       <div class="sidebar__header">
-        <span class="sidebar__header-title">Cycling Web Map</span>
+        <span class="sidebar__header-title">Карта велопрогулок</span>
         <span
           class="sidebar-icon material-symbols-outlined"
           @click="toggleSidebar"
@@ -22,8 +34,9 @@
       </div>
       <!-- <SidebarBody /> -->
       <div class="sidebar__body">
-        <Menu v-show="tab === 'menu'" />
+        <!-- <Menu v-show="tab === 'menu'" /> -->
         <Search v-show="tab === 'search'" />
+        <Routes v-show="tab === 'route'" />
       </div>
     </div>
   </div>
@@ -33,18 +46,24 @@
 import { storeToRefs } from "pinia";
 import { useGlobalStore } from "~/store/global";
 
+const user = useStrapiUser();
+
 const route = useRoute();
 const store = useGlobalStore();
 
 const { toggleSidebar } = store;
 const { isSidebarOpen } = storeToRefs(store);
 
-const icons = ["menu", "search", "route"];
+const icons = ["search", "route"];
 const tab = computed(() => route.query.tab);
 
 const openSidebar = (query) => {
   setRouteQuery("tab", query);
   toggleSidebar();
+
+  if (useSaveModalOpen().value) {
+    useToggleSaveModal();
+  }
 };
 </script>
 

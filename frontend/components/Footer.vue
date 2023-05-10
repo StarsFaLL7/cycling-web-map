@@ -10,7 +10,7 @@
           <nuxt-link to="/map">Карта</nuxt-link>
         </li>
         <li class="footer__menu-item">
-          <nuxt-link to="/profile/stats">Профиль</nuxt-link>
+          <nuxt-link to="/profile">Профиль</nuxt-link>
         </li>
       </ul>
     </div>

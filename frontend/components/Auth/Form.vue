@@ -1,5 +1,5 @@
 <template>
-  <div class="auth-overflow" v-show="props.open">
+  <div class="auth-overflow" v-show="isOpen">
     <div class="auth-background" @click="emits('close-modal')"></div>
     <div
       class="auth"
@@ -74,13 +74,9 @@
 </template>
 
 <script setup>
+const isOpen = useState("isAuthOpen", () => false);
+
 const selectedTab = ref(0);
-const props = defineProps({
-  open: {
-    type: Boolean,
-    default: false,
-  },
-});
 
 const emits = defineEmits(["close-modal"]);
 

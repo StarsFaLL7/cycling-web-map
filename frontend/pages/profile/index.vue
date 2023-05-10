@@ -1,5 +1,5 @@
 <template>
-  <div class="profile">
+  <div class="profile" v-if="user">
     <img
       src="https://rare-gallery.com/mocahbig/473896-landscape-green-nature-Switzerland-trees-mountains.jpg"
       class="profile__image"
@@ -8,7 +8,7 @@
       <div class="profile__header">
         <div class="profile__header-avatar">
           <img
-            src="https://media.kg-portal.ru/images/barnyard/barnyard_38.jpg"
+            src="https://aroundprague.cz/assets/images/resources/18069/cyclist-4369402-1280.jpg"
             alt=""
           />
         </div>

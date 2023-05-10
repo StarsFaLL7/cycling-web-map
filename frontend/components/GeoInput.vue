@@ -43,7 +43,7 @@ geocoder.on("result", (e) => {
   console.log(e.result.center);
   removeMarker(result.value?.center);
 
-  const marker = new mapboxgl.Marker()
+  const marker = new mapboxgl.Marker({ color: "#62ae45" })
     .setLngLat(e.result.center)
     .addTo(map.value);
 
