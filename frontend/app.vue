@@ -8,6 +8,9 @@
 
 <script setup>
 const route = useRoute();
+
+const { fetchUser } = useStrapiAuth();
+await fetchUser();
 </script>
 
 <style lang="scss">

@@ -9,6 +9,7 @@
     "postinstall": "nuxt prepare"
   },
   "devDependencies": {
+    "@nuxtjs/strapi": "^1.9.1",
     "@types/node": "^18.15.11",
     "nuxt": "3.3.0",
     "sass": "^1.60.0",

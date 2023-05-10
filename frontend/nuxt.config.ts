@@ -47,5 +47,17 @@ export default defineNuxtConfig({
       },
     },
   },
-  modules: ["@pinia/nuxt"],
+  modules: ["@pinia/nuxt", "@nuxtjs/strapi"],
+  strapi: {
+    url: process.env.STRAPI_URL || "http://localhost:1337",
+    prefix: "/api",
+    version: "v4",
+    expires: "7d",
+    cookie: {
+      sameSite: true,
+      path: "/",
+    },
+    cookieName: "strapi_jwt",
+  },
+  ssr: true,
 });

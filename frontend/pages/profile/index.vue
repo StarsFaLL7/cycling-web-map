@@ -14,7 +14,7 @@
         </div>
         <div class="profile__header-content">
           <div class="profile__header-top">
-            <h4 class="profile__name">Name Surname</h4>
+            <h4 class="profile__name">{{ user.username }}</h4>
             <p class="profile__status">
               Lorem ipsum dolor sit amet consectetur adipisicing elit.
             </p>
@@ -37,6 +37,7 @@
         </div>
         <div class="profile__header-more">
           <!-- <EllipsisHorizontalCircleIcon /> -->
+          <UIButton @click="onLogout">Выйти</UIButton>
           <UIButton>Редактировать профиль</UIButton>
         </div>
       </div>
@@ -77,10 +78,18 @@
 
 <script setup>
 import { SwiperSlide } from "swiper/vue";
-import { EllipsisHorizontalCircleIcon } from "@heroicons/vue/24/outline";
+
+const { logout } = useStrapiAuth();
+const router = useRouter();
+
+const onLogout = async () => {
+  router.push({ path: "/" });
+  await logout();
+};
 
 definePageMeta({
   layout: "profile",
+  middleware: ["auth"],
 });
 
 const stats = ref([
@@ -109,6 +118,12 @@ const achievements = ref([
   "Первый отзыв",
   "Первый маршрут",
 ]);
+
+const user = useStrapiUser();
+
+onMounted(() => {
+  console.log(user.value);
+});
 </script>
 
 <style lang="scss" scoped>
@@ -134,6 +149,8 @@ const achievements = ref([
       margin-left: auto;
       margin-right: 20px;
       transform: translateY(calc(50% + 20px));
+      display: flex;
+      gap: 10px;
 
       .btn {
         color: #fff;
