@@ -9,8 +9,8 @@
     </div>
     <div class="card__location">
       <div class="card__location-routes">
-        <div>площадь 1905 года</div>
-        <div>улица Изобретателей</div>
+        <div>{{ props.start }}</div>
+        <div>{{ props.end }}</div>
       </div>
       <div class="card__location-info">
         <div>
@@ -28,6 +28,8 @@
 
 <script setup>
 import { ClockIcon, MapIcon } from "@heroicons/vue/24/outline";
+
+const props = defineProps(["start", "end"]);
 </script>
 
 <style lang="scss" scoped>

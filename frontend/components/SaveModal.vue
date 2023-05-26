@@ -35,19 +35,11 @@ const addRoute = async () => {
       await create("routes", {
         title: title.value,
         description: description.value,
-        coords: route.value.map(
-          ({
-            result: {
-              center,
-              properties: { address: streetName },
-            },
-          }) => {
-            const [lng, lat] = center;
-            return { streetName, lng, lat };
-          }
-        ),
+        coords: route.value.map(({ result: { center, place_name_ru } }) => {
+          const [lng, lat] = center;
+          return { streetName: place_name_ru, lng, lat };
+        }),
       });
-
       useToggleSaveModal();
     } catch (e) {}
   }

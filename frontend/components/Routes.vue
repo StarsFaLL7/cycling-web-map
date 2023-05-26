@@ -2,12 +2,20 @@
   <div class="routes">
     <h2 class="routes-title">Маршруты</h2>
     <div class="routes__items">
-      <RouteCard v-for="i of 3" />
+      <RouteCard
+        :start="item.title"
+        :end="item.description"
+        v-for="item of data"
+        :key="item.id"
+      />
     </div>
   </div>
 </template>
 
-<script setup></script>
+<script setup>
+const { data: initialData } = await getRoutes();
+const data = initialData.map((el) => ({ ...el.attributes, id: el.id }));
+</script>
 
 <style lang="scss" scoped>
 .routes {
