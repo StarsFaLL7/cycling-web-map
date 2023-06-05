@@ -1,18 +1,24 @@
 <template>
   <div class="sidebar__search">
     <div class="search__block">
-      <div class="search__block-item" v-for="(n, i) of inputs" :key="n">
-        <GeoInput ref="data" :zIndex="zIndexLimit - i" />
+      <div class="search__block-item" v-for="(item, i) of inputData" :key="item.id">
+        <InputAddress @selected="onSelect($event, i)" />
         <button
-          class="search__block-btn"
-          :class="{
-            remove: i < inputs.length - 1,
-            add: i === inputs.length - 1,
-          }"
-          @click="i < inputs.length - 1 ? decrement(i) : increment()"
+          v-if="!inputData[i]?.label || i !== inputData.length - 1"
+          @click="removeField(i)"
+          class="search__block-btn remove"
         >
-          <span class="material-symbols-outlined" v-if="data && data[i]">
-            {{ i < inputs.length - 1 ? "close" : "add" }}
+          <span class="material-symbols-outlined">
+            remove
+          </span>
+        </button>
+        <button
+            @click="addField(i)"
+            class="search__block-btn add"
+            v-else
+        >
+          <span class="material-symbols-outlined">
+            add
           </span>
         </button>
       </div>
@@ -23,7 +29,7 @@
     <div class="spacer"></div>
     <button
       class="sidebar__search-btn"
-      v-if="user && inputs.length > 1"
+      v-if="user && inputData.length > 1"
       @click="saveRoute"
     >
       Сохарнить маршрут
@@ -34,46 +40,69 @@
 <script setup>
 import axios from "axios";
 import mapboxgl from "mapbox-gl";
+import { v4 as uuidv4 } from "uuid";
 
 import { storeToRefs } from "pinia";
 import { useMapStore } from "~/store/map";
 import { useGlobalStore } from "~/store/global";
+import InputAddress from "../InputAddress";
 
 const { toggleSidebar } = useGlobalStore();
 
 const user = useStrapiUser();
 
 const routeMarkers = ref([]);
-const zIndexLimit = 1000;
 
 const store = useMapStore();
 
-const { removeMarker } = store;
+const { add, remove } = store;
 const { markers, map } = storeToRefs(store);
 
-const data = ref();
-const inputs = ref([0]);
+const inputData = ref([{
+  id: uuidv4()
+}])
 
-const increment = () => {
-  if (data.value[data.value.length - 1].result) {
-    inputs.value.push(inputs.value[inputs.value.length - 1] + 1);
-  }
-};
+const addField = (i) => {
+  if (!inputData.value[i]?.label) return
+  inputData.value.push({
+    id: uuidv4()
+  })
+}
 
-const decrement = (i) => {
-  inputs.value = inputs.value.filter((_, k) => k !== i);
+const removeField = (i) => {
+  if (i === 0 && inputData.value.length === 1) return
+  remove(inputData.value[i].id)
+  inputData.value.splice(i, 1)
+}
 
-  removeMarker(data.value[i].result.center);
-  routeMarkers.value.map((m) => m.remove());
-  routeMarkers.value = [];
+const onSelect = (data, i) => {
+  inputData.value[i] = {id: inputData.value[i].id, ...data}
 
-  map.value.setLayoutProperty("theRoute", "visibility", "none");
-};
+  const marker = new mapboxgl.Marker({ color: "green", draggable: true }).setLngLat(data.origin)
+  add(inputData.value[i].id, marker)
+  // marker.on('dragend', () => {})
+}
+
+// const increment = () => {
+//   if (data.value[data.value.length - 1].result) {
+//     inputs.value.push(inputs.value[inputs.value.length - 1] + 1);
+//   }
+// };
+//
+// const decrement = (i) => {
+//   inputs.value = inputs.value.filter((_, k) => k !== i);
+//
+//   removeMarker(data.value[i].result.center);
+//   routeMarkers.value.map((m) => m.remove());
+//   routeMarkers.value = [];
+//
+//   map.value.setLayoutProperty("theRoute", "visibility", "none");
+// };
 
 const makeRoute = async () => {
-  if (data.value.map((el) => el.result)?.length < 2) return;
+  // if (inputData.value.length ) return;
 
-  const markersQuery = markers.value
+  const markersQuery = Object.values(markers.value)
     .map((m) => getMarkerCoords(m).join(","))
     .join(";");
 
@@ -88,11 +117,6 @@ const makeRoute = async () => {
 
     routeMarkers.value.push(marker);
   }
-
-  // const popup = new mapboxgl.Popup({ closeOnClick: false })
-  //   .setLngLat([60.59450399034171, 56.82120551155373])
-  //   .setHTML("<h1>Hello World!</h1>")
-  //   .addTo(map);
 
   map.value.setLayoutProperty("theRoute", "visibility", "visible");
   map.value.getSource("theRoute").setData(res.data.routes[0].geometry);
@@ -117,17 +141,9 @@ const saveRoute = () => {
     &-item {
       display: flex;
       justify-content: space-between;
-      align-items: flex-start;
       gap: 10px;
 
       margin-bottom: 10px;
-      & .geo-input {
-        width: 100%;
-        .mapboxgl-ctrl-geocoder {
-          min-width: 100%;
-          // max-width: calc(100% - 46px);
-        }
-      }
     }
 
     &-btn {
@@ -136,15 +152,17 @@ const saveRoute = () => {
       cursor: pointer;
 
       padding: 0;
-
-      min-width: 36px;
-      min-height: 36px;
+      aspect-ratio: 1;
+      flex-shrink: 0;
+      flex-grow: 1;
+      width: 45px;
 
       display: flex;
       justify-content: center;
       align-items: center;
 
       transition: all 0.2s;
+
 
       &.add {
         &:hover {

@@ -47,7 +47,7 @@ export default defineNuxtConfig({
       },
     },
   },
-  modules: ["@pinia/nuxt", "@nuxtjs/strapi"],
+  modules: ["@pinia/nuxt", "@nuxtjs/strapi", "nuxt-lodash",],
   strapi: {
     url: process.env.STRAPI_URL || "http://localhost:1337",
     prefix: "/api",

@@ -1,6 +1,5 @@
 <template>
   <div>
-    <!-- <Header class="green" /> -->
     <Sidebar />
     <slot />
   </div>
