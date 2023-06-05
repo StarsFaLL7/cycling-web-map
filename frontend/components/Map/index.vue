@@ -48,6 +48,7 @@ async function createMap() {
     style: "mapbox://styles/shirowayfy/clfzhuyc1007m01nx6qedzgaz",
     center: [60.61660358181774, 56.83790908582503],
     zoom: 10,
+    maxBounds: [60.1042, 56.6342, 61.0479, 57.0652]
   });
 
   map.on("style.load", (e) => {
