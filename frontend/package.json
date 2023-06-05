@@ -28,6 +28,7 @@
     "moment": "^2.29.4",
     "normalize.css": "^8.0.1",
     "pinia": "^2.0.33",
+    "query-string": "^8.1.0",
     "swiper": "^9.2.4",
     "uuid": "^9.0.0",
     "vue-chartjs": "^5.2.0"

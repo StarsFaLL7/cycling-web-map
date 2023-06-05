@@ -2,7 +2,7 @@
   <div class="sidebar__search">
     <div class="search__block">
       <div class="search__block-item" v-for="(item, i) of inputData" :key="item.id">
-        <InputAddress @selected="onSelect($event, i)" />
+        <InputAddress @selected="onSelect($event, i)" :uuid="item.id" @drag="removeRoute" />
         <button
           v-if="!inputData[i]?.label || i !== inputData.length - 1"
           @click="removeField(i)"
@@ -46,6 +46,7 @@ import { storeToRefs } from "pinia";
 import { useMapStore } from "~/store/map";
 import { useGlobalStore } from "~/store/global";
 import InputAddress from "../InputAddress";
+import {getRouteData} from "../../composables/useMapbox";
 
 const { toggleSidebar } = useGlobalStore();
 
@@ -78,37 +79,18 @@ const removeField = (i) => {
 const onSelect = (data, i) => {
   inputData.value[i] = {id: inputData.value[i].id, ...data}
 
-  const marker = new mapboxgl.Marker({ color: "green", draggable: true }).setLngLat(data.origin)
+  const marker = new mapboxgl.Marker({ color: "#3d8934", draggable: true }).setLngLat(data.origin)
   add(inputData.value[i].id, marker)
-  // marker.on('dragend', () => {})
 }
 
-// const increment = () => {
-//   if (data.value[data.value.length - 1].result) {
-//     inputs.value.push(inputs.value[inputs.value.length - 1] + 1);
-//   }
-// };
-//
-// const decrement = (i) => {
-//   inputs.value = inputs.value.filter((_, k) => k !== i);
-//
-//   removeMarker(data.value[i].result.center);
-//   routeMarkers.value.map((m) => m.remove());
-//   routeMarkers.value = [];
-//
-//   map.value.setLayoutProperty("theRoute", "visibility", "none");
-// };
-
 const makeRoute = async () => {
-  // if (inputData.value.length ) return;
+  if (inputData.value.filter(el => el?.label?.length).length < 2 ) return;
 
   const markersQuery = Object.values(markers.value)
     .map((m) => getMarkerCoords(m).join(","))
     .join(";");
 
-  const res = await axios.get(
-    `https://api.mapbox.com/directions/v5/mapbox/cycling/${markersQuery}?alternatives=true&geometries=geojson&access_token=pk.eyJ1Ijoic2hpcm93YXlmeSIsImEiOiJjbGZ5M2EwNHIwaXZrM2VwaHVnN3JubjdlIn0.fUViaabp3gXDmKj9RfblVQ`
-  );
+  const res = await getRouteData(markersQuery)
 
   for (const el of res.data.waypoints) {
     const marker = new mapboxgl.Marker({ color: "red" })
@@ -126,7 +108,15 @@ const getMarkerCoords = (marker) => {
   const { lng, lat } = marker._lngLat;
   return [lng, lat];
 };
+
 const currentRoute = useState("saveModalRoute");
+
+const removeRoute =() => {
+    routeMarkers.value.map((m) => m.remove());
+    routeMarkers.value = [];
+
+    map.value.setLayoutProperty("theRoute", "visibility", "none");
+}
 
 const saveRoute = () => {
   toggleSidebar();

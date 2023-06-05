@@ -1,5 +1,5 @@
 <template>
-  <Multiselect @select="select" class="search-select" @search-change="debouncedHandler" searchable v-model="data" :options="result"
+  <Multiselect ref="selectElement" @select="select" class="search-select" @search-change="debouncedHandler" searchable v-model="data" :options="result"
                close-on-select placeholder="Введите запрос" noOptionsText="Нет Результатов">
     <template v-slot:option="{ option }">
       <div class="search-select__option">
@@ -12,18 +12,43 @@
 
 <script setup>
 import debounce from "lodash.debounce";
-import axios from 'axios'
 import Multiselect from '@vueform/multiselect'
+import {storeToRefs} from "pinia";
+import {useMapStore} from "../store/map";
+import {formatPlaceData, getSearchData} from "../composables/useMapbox";
 
-const emits = defineEmits(['selected'])
-const select = () => {
-  emits('selected', data.value)
+const store = useMapStore();
+
+const { add, remove } = store;
+const { markers, map } = storeToRefs(store);
+
+const params = {
+  language: 'ru',
+  routing: 'true',
+  bbox: [60.1042, 56.6342, 61.0479, 57.0652].join(',')
 }
 
-const config = useRuntimeConfig();
-const {MAPBOX_ACCESS_TOKEN} = config.public;
+const selectElement = ref()
 
-const bbox = [60.1042, 56.6342, 61.0479, 57.0652]
+const emits = defineEmits(['selected', 'drag'])
+
+const select = () => {
+  emits('selected', data.value)
+  const marker = markers.value[props.uuid]
+
+  marker.on('dragend', async () => {
+    const {lng, lat} = marker.getLngLat()
+
+    const result = await getSearchData(`${lng},${lat}`, params).then(res => formatPlaceData(res.data.features[0]))
+    selectElement.value.select(result)
+  })
+
+  marker.on('dragstart', () => emits('drag'))
+}
+
+const props = defineProps({
+  uuid: String
+})
 
 const result = ref([])
 const data = ref()
@@ -43,22 +68,8 @@ const removeDuplicatesByObjKeys = (arr, keys) => {
 };
 
 const debouncedHandler = debounce(async query => {
-  const res = await axios.get(`https://api.mapbox.com/geocoding/v5/mapbox.places/${query}.json?access_token=${MAPBOX_ACCESS_TOKEN}&language=ru&routing=true&bbox=${bbox.join(',')}`).then(res => res.data.features)
-
-  const data = res.map(el => {
-    const sub = el.address ? ' ' + el.address : ''
-    const place = el.context.filter(el => el.id.includes('place'))[0]
-
-    return {
-      label: el.text_ru + sub,
-      address: el.properties?.address + place ? ' ' + place.text_ru : '',
-      value: {
-        label: el.text_ru + sub,
-        address: el.properties?.address + place ? ' ' + place.text_ru : '',
-        origin: el.center
-      }
-    }
-  })
+  const res = await getSearchData(query, params).then(res => res.data.features)
+  const data = res.map(formatPlaceData)
 
   result.value = removeDuplicatesByObjKeys(data, ['label', 'address'])
 }, 300);
