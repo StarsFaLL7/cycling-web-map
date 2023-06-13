@@ -71,8 +71,8 @@ const distance = (props.distance / 1000).toFixed(1) + ' ' + 'км'
 
     &-btn {
       background: transparent;
-      color: #fff;
-      background: $green-400;
+      color: #fff !important;
+      background: $green-400 !important;
     }
   }
 
