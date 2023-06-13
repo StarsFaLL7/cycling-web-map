@@ -6,23 +6,31 @@
       <nuxt-link to="/map">создайте свой</nuxt-link>
     </p>
     <div class="container">
-      <Slider
-        class="home-routes__slider"
-        loop
-        :slidesPerView="4"
-        :spaceBetween="20"
-        navigation
-      >
-        <swiper-slide v-for="i of 10" :key="i">
-          <RouteCard />
-        </swiper-slide>
-      </Slider>
+            <Slider
+              class="home-routes__slider"
+              loop
+              :slidesPerView="4"
+              :spaceBetween="20"
+              navigation
+            >
+              <swiper-slide v-for="(item, i) of data" :key="i">
+                <RouteCard
+                    :start="item.coords[0].streetName"
+                    :end="item.coords[item.coords.length - 1].streetName"
+                    :distance="item.distance"
+                    :duration="item.duration"
+                />
+              </swiper-slide>
+            </Slider>
     </div>
   </div>
 </template>
 
 <script setup>
-import { SwiperSlide } from "swiper/vue";
+import {SwiperSlide} from "swiper/vue";
+
+const {data: initialData} = await getRoutes();
+const data = initialData.map((el) => ({...el.attributes, id: el.id}));
 </script>
 
 <style lang="scss" scoped>

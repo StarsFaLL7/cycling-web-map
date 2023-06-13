@@ -5,3 +5,11 @@ export const getRoutes = async () => {
     populate: "*",
   });
 };
+
+export const getPlaces = async () => {
+  const { find } = useStrapi4();
+
+  return await find("places", {
+    populate: "*",
+  });
+};

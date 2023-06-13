@@ -1,5 +1,5 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
-const { MAPBOX_ACCESS_TOKEN } = process.env;
+const { MAPBOX_ACCESS_TOKEN, STRAPI_URL } = process.env;
 
 export default defineNuxtConfig({
   runtimeConfig: {
@@ -49,13 +49,11 @@ export default defineNuxtConfig({
   },
   modules: ["@pinia/nuxt", "@nuxtjs/strapi", "nuxt-lodash",],
   strapi: {
-    url: process.env.STRAPI_URL || "http://localhost:1337",
+    url: STRAPI_URL || "http://localhost:1337",
     prefix: "/api",
     version: "v4",
     expires: "7d",
     cookie: {
-      sameSite: true,
-      httpOnly: false,
       path: "/",
     },
     cookieName: "strapi_jwt",

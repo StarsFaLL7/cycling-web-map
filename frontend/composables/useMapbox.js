@@ -31,5 +31,5 @@ export const getRouteData = async (query) => {
     const config = useRuntimeConfig();
     const {MAPBOX_ACCESS_TOKEN} = config.public;
 
-    return await axios.get(`https://api.mapbox.com/directions/v5/mapbox/cycling/${query}?alternatives=true&geometries=geojson&access_token=${MAPBOX_ACCESS_TOKEN}`)
+    return await axios.get(`https://api.mapbox.com/directions/v5/mapbox/cycling/${query}?alternatives=true&geometries=geojson&annotations=duration,distance&access_token=${MAPBOX_ACCESS_TOKEN}`)
 }

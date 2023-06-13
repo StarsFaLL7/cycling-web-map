@@ -53,6 +53,10 @@ const { toggleSidebar } = useGlobalStore();
 const user = useStrapiUser();
 
 const routeMarkers = ref([]);
+const routeData = ref({
+  distance: 0,
+  duration: 0
+})
 
 const store = useMapStore();
 
@@ -91,6 +95,12 @@ const makeRoute = async () => {
     .join(";");
 
   const res = await getRouteData(markersQuery)
+  const routes = res.data.routes
+
+  for (let i = 0; i < (routes.length > 1 ? routes.length - 1 : routes.length); i++) {
+    routeData.value.duration += routes[i].duration
+    routeData.value.distance += routes[i].distance
+  }
 
   for (const el of res.data.waypoints) {
     const marker = new mapboxgl.Marker({ color: "red" })
@@ -120,7 +130,14 @@ const removeRoute =() => {
 
 const saveRoute = () => {
   toggleSidebar();
-  currentRoute.value = data.value;
+
+  currentRoute.value = {
+    ...routeData.value,
+    routes: inputData.value
+  };
+
+  console.log(currentRoute.value)
+
   useToggleSaveModal();
 };
 </script>

@@ -1,5 +1,8 @@
 <template>
   <div class="route-card card">
+    <div class="route-card__closer">
+      <UIButton class="route-card__closer-btn">На карте</UIButton>
+    </div>
     <nuxt-link to="#" class="card__link"></nuxt-link>
     <div class="card__image">
       <img
@@ -9,17 +12,17 @@
     </div>
     <div class="card__location">
       <div class="card__location-routes">
-        <div>{{ props.start }}</div>
-        <div>{{ props.end }}</div>
+        <div>Начало: {{ props.start }}</div>
+        <div>Конец: {{ props.end }}</div>
       </div>
       <div class="card__location-info">
         <div>
           <ClockIcon />
-          30 мин.
+          {{ duration }}
         </div>
         <div>
           <MapIcon />
-          2.6 км
+          {{distance }}
         </div>
       </div>
     </div>
@@ -29,26 +32,57 @@
 <script setup>
 import { ClockIcon, MapIcon } from "@heroicons/vue/24/outline";
 
-const props = defineProps(["start", "end"]);
+const props = defineProps(["start", "end", 'duration', 'distance']);
+
+const duration = (props.duration / 60).toFixed(1) + ' ' + 'мин'
+const distance = (props.distance / 1000).toFixed(1) + ' ' + 'км'
 </script>
 
 <style lang="scss" scoped>
 .route-card {
   position: relative;
-  //   box-shadow: 0px 0px 8px 0px rgba(34, 60, 80, 0.2);
+  height: 200px;
   border: 3px solid $green-200;
   border-radius: 10px;
   overflow: hidden;
   cursor: pointer;
   transition: all 0.2s;
 
-  &:hover {
-    .card__image img {
-      transform: scale(1.2);
-    }
-
-    border-color: $green-400;
+  &:hover &__closer {
+    transform: scale(1);
+    opacity: 1;
   }
+
+  &__closer {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+    background: rgba(0,0,0,.5);
+    z-index: 10;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transform: scale(.95);
+    transition: all .2s;
+    opacity: 0;
+
+    &-btn {
+      background: transparent;
+      color: #fff;
+      background: $green-400;
+    }
+  }
+
+  //&:hover {
+  //  .card__image img {
+  //    transform: scale(1.2);
+  //  }
+  //
+  //  border-color: $green-400;
+  //}
 
   .card__image {
     width: 100%;

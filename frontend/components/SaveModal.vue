@@ -2,17 +2,17 @@
   <form class="save-modal" v-if="isOpen" @submit.prevent="addRoute">
     <h1 class="save-modal__title">Новый маршрут</h1>
     <input
-      class="save-modal__input"
-      required
-      type="text"
-      placeholder="Название"
-      v-model="title"
+        class="save-modal__input"
+        required
+        type="text"
+        placeholder="Название"
+        v-model="title"
     />
     <textarea
-      class="save-modal__text"
-      required
-      placeholder="Описание маршрута"
-      v-model="description"
+        class="save-modal__text"
+        required
+        placeholder="Описание маршрута"
+        v-model="description"
     />
     <div class="save-modal__controls">
       <UIButton>Сохранить</UIButton>
@@ -23,8 +23,8 @@
 
 <script setup>
 const isOpen = useState("isSaveModalOpen", () => false);
-const route = useState("saveModalRoute", () => []);
-const { create } = useStrapi();
+const routeData = useState("saveModalRoute", () => []);
+const {create} = useStrapi();
 
 const title = ref("");
 const description = ref("");
@@ -32,16 +32,30 @@ const description = ref("");
 const addRoute = async () => {
   if (title.value.length && description.value.length) {
     try {
+      const {distance, duration, routes} = routeData.value
+
+      console.log(distance, duration)
+
+      const coords = routes.map(feat => {
+        const {label: streetName, origin} = feat
+
+        return {
+          streetName,
+          lng: origin[0],
+          lat: origin[1]
+        }
+      })
+
       await create("routes", {
         title: title.value,
         description: description.value,
-        coords: route.value.map(({ result: { center, place_name_ru } }) => {
-          const [lng, lat] = center;
-          return { streetName: place_name_ru, lng, lat };
-        }),
+        distance,
+        duration,
+        coords
       });
       useToggleSaveModal();
-    } catch (e) {}
+    } catch (e) {
+    }
   }
 };
 </script>

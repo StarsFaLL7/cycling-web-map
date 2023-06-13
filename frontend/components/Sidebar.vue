@@ -148,12 +148,16 @@ $elevation: 0 1px 2px rgba(0, 0, 0, 0.3), 0 2px 6px 2px rgba(0, 0, 0, 0.15);
 
   &__content {
     width: 350px;
-    min-height: 100vh;
+    height: 100vh;
+    overflow: hidden;
 
     padding: 16px;
 
     background: $bg-color;
     box-shadow: $elevation;
+
+    display: flex;
+    flex-direction: column;
 
     position: absolute;
     top: 0;
@@ -180,6 +184,8 @@ $elevation: 0 1px 2px rgba(0, 0, 0, 0.3), 0 2px 6px 2px rgba(0, 0, 0, 0.15);
   }
 
   &__body {
+    height: 100%;
+    overflow: hidden;
   }
 }
 </style>
