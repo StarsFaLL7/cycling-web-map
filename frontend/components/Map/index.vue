@@ -1,8 +1,8 @@
 <template>
   <div>
     <div id="map"></div>
-    <Transition name="slide">
-      <div class="map-card card" v-if="selectedPlaceData">
+    <Transition name="slide" mode="out-in">
+      <div class="map-card card" v-if="selectedPlaceData" :key="selectedPlaceData.title">
         <div class="close" @click="selectedPlaceData = null">
           <XMarkIcon/>
         </div>
