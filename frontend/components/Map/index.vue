@@ -3,7 +3,7 @@
     <div id="map"></div>
     <Transition name="slide" mode="out-in">
       <div class="map-card card" v-if="selectedPlaceData" :key="selectedPlaceData.title">
-        <div class="close" @click="selectedPlaceData = null">
+        <div class="close" @click="clearPlace">
           <XMarkIcon/>
         </div>
         <img class="map-card__image" :src="selectedPlaceData.imageURL"/>
@@ -46,12 +46,16 @@ const {MAPBOX_ACCESS_TOKEN} = config.public;
 const selectedPlaceData = ref(null)
 
 const flyToPlace = (lngLat) => {
-  console.log(mapStore.map)
   mapStore.map.flyTo({
     center: lngLat,
     essential: true,
-    zoom: 14
+    zoom: 15
   })
+}
+
+const clearPlace = () => {
+  selectedPlaceData.value.el.classList.remove('active')
+  selectedPlaceData.value = null
 }
 
 onMounted(async () => {
@@ -80,13 +84,12 @@ async function createMap() {
     // style: "mapbox://styles/shirowayfy/clfzhtq3h002g01p6uubcw8yb",
     style: "mapbox://styles/shirowayfy/clfzhuyc1007m01nx6qedzgaz",
     center: [60.61660358181774, 56.83790908582503],
-    zoom: 10,
+    zoom: 12,
     maxBounds: [60.1042, 56.6342, 61.0479, 57.0652]
   });
 
 
   map.on("style.load", (e) => {
-    console.log('LOADED')
     map.addSource("theRoute", {
       type: "geojson",
       data: {
@@ -121,12 +124,15 @@ async function createMap() {
     </div>
    `
     el.className = 'marker';
+    place.el = el
 
     const {lat, lng} = place.origin
     new mapboxgl.Marker(el).setLngLat([lng, lat]).addTo(map);
 
     el.addEventListener('click', (e) => {
-      console.log('???', place)
+      if (selectedPlaceData.value) clearPlace()
+
+      el.classList.add('active')
       selectedPlaceData.value = place
     })
   }
@@ -156,8 +162,27 @@ async function createMap() {
   display: none;
 }
 
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 .marker {
   border-radius: 50%;
+
+  &.active {
+    .marker-content {
+      transform: scale(1.2);
+
+      &::after {
+        opacity: 1;
+      }
+    }
+  }
 
   &-content {
     transition: all .2s;
@@ -171,6 +196,17 @@ async function createMap() {
     align-items: center;
     cursor: pointer;
     box-shadow: 0px 0px 8px 0px rgba(74, 156, 54, 0.2);
+
+    &::after {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='100' ry='100' stroke='%233D8934FF' stroke-width='2' stroke-dasharray='50%25%2c 13%25' stroke-dashoffset='86' stroke-linecap='butt'/%3e%3c/svg%3e");
+      border-radius: 100px;
+      animation: rotate 3s infinite linear;
+      opacity: 0;
+    }
 
     &:hover {
       transform: scale(1.2);
