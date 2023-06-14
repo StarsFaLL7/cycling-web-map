@@ -9,6 +9,7 @@ export default defineNuxtConfig({
   },
   app: {
     head: {
+      title: 'Карта Велопрогулок',
       link: [
         {
           href: "https://fonts.googleapis.com",
