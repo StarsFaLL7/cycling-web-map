@@ -16,21 +16,6 @@ export const useMapStore = defineStore({
       marker.addTo(this.map)
     },
     remove(id) {
-      // if (coords?.length === 2) {
-      //   this.$patch({
-      //     markers: this.markers.filter((el) => {
-      //       const { lng, lat } = el._lngLat;
-      //
-      //       const isRemove = coords[0] === lng && coords[1] === lat;
-      //
-      //       if (isRemove) {
-      //         el.remove();
-      //       }
-      //
-      //       return !isRemove;
-      //     }),
-      //   });
-      // }
       this.markers[id].remove()
       delete this.markers[id]
     },
@@ -41,6 +26,6 @@ export const useMapStore = defineStore({
     },
   },
   getters: {
-    allMarkers: (state) => state.markers,
+    allMarkers: (state) => state.markers
   },
 });

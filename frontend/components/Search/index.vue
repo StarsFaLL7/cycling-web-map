@@ -47,6 +47,7 @@ import { useMapStore } from "~/store/map";
 import { useGlobalStore } from "~/store/global";
 import InputAddress from "../InputAddress";
 import {getRouteData} from "../../composables/useMapbox";
+import {onMounted} from "vue";
 
 const { toggleSidebar } = useGlobalStore();
 
@@ -66,6 +67,10 @@ const { markers, map } = storeToRefs(store);
 const inputData = ref([{
   id: uuidv4()
 }])
+
+onMounted(() => {
+  console.log(map.value?.getStyle().layers)
+})
 
 const addField = (i) => {
   if (!inputData.value[i]?.label) return
@@ -135,8 +140,6 @@ const saveRoute = () => {
     ...routeData.value,
     routes: inputData.value
   };
-
-  console.log(currentRoute.value)
 
   useToggleSaveModal();
 };
