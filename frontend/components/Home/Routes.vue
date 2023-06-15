@@ -15,10 +15,7 @@
             >
               <swiper-slide v-for="(item, i) of data" :key="i">
                 <RouteCard
-                    :start="item.coords[0].streetName"
-                    :end="item.coords[item.coords.length - 1].streetName"
-                    :distance="item.distance"
-                    :duration="item.duration"
+                    :data="item"
                 />
               </swiper-slide>
             </Slider>

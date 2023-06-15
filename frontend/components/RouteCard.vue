@@ -3,17 +3,17 @@
     <div class="route-card__closer">
       <UIButton class="route-card__closer-btn">На карте</UIButton>
     </div>
-    <nuxt-link to="#" class="card__link"></nuxt-link>
+    <nuxt-link :to="`/map?route=${props.data.id}`" class="card__link"></nuxt-link>
     <div class="card__image">
       <img
-        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT-xRlCgVwf9teWtKa_pTHXujUXnJ0Mqmcagg&usqp=CAU"
+        src="@/assets/images/route-image.png"
         alt=""
       />
     </div>
     <div class="card__location">
       <div class="card__location-routes">
-        <div>Начало: {{ props.start }}</div>
-        <div>Конец: {{ props.end }}</div>
+        <div>Начало: {{ props.data.coords[0].streetName }}</div>
+        <div>Конец: {{ props.data.coords[props.data.coords.length - 1].streetName }}</div>
       </div>
       <div class="card__location-info">
         <div>
@@ -32,10 +32,10 @@
 <script setup>
 import { ClockIcon, MapIcon } from "@heroicons/vue/24/outline";
 
-const props = defineProps(["start", "end", 'duration', 'distance']);
+const props = defineProps(["data"]);
 
-const duration = (props.duration / 60).toFixed(1) + ' ' + 'мин'
-const distance = (props.distance / 1000).toFixed(1) + ' ' + 'км'
+const duration = (props.data.duration / 60).toFixed(1) + ' ' + 'мин'
+const distance = (props.data.distance / 1000).toFixed(1) + ' ' + 'км'
 </script>
 
 <style lang="scss" scoped>

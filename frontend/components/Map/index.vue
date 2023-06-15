@@ -2,7 +2,7 @@
   <div>
     <div id="map"></div>
     <Transition name="slide" mode="out-in">
-      <div class="map-card card" v-if="selectedPlaceData" :key="selectedPlaceData.title">
+      <div class="map-card card" v-if="showPlaceCard && selectedPlaceData" :key="selectedPlaceData.title">
         <div class="close" @click="clearPlace">
           <XMarkIcon/>
         </div>
@@ -15,6 +15,32 @@
           <p class="map-card__description">
             {{ selectedPlaceData.description }}
           </p>
+        </div>
+      </div>
+      <div class="map-card card" v-else-if="showRouteCard && selectedRouteData" :key="selectedRouteData.title">
+        <div class="close" @click="clearRoute">
+          <XMarkIcon/>
+        </div>
+        <img class="map-card__image" src="@/assets/images/route-image.png"/>
+        <div class="map-card__content">
+          <button class="show-btn" @click="flyToPlace(selectedRouteData.coords[0])">
+            <GlobeEuropeAfricaIcon/>
+          </button>
+          <span class="map-card__author" v-if="selectedRouteData.author && selectedRouteData.author.data">Автор: <span>{{ selectedRouteData.author.data.attributes.username }}</span></span>
+          <h3 class="map-card__title">{{ selectedRouteData.title }}</h3>
+          <p class="map-card__description">
+            {{ selectedRouteData.description }}
+          </p>
+          <h4 class="map-card__suptitle">Маршрут ({{getDistance(selectedRouteData.distance)}}, {{ getDuration(selectedRouteData.duration) }})</h4>
+          <ul class="map-card__list">
+            <li class="map-card__list-item" v-for="(item, i) of selectedRouteData.coords" :key="i">
+              – {{ item.streetName }}
+            </li>
+          </ul>
+          <a :href="generateYandexMapsURL(selectedRouteData.coords.map(({lng, lat}) => ([lng, lat])))" target="_blank"
+             class="map-card__yandex-btn">
+            Открыть в Яндекс Картах
+          </a>
         </div>
       </div>
     </Transition>
@@ -43,7 +69,13 @@ const config = useRuntimeConfig();
 
 const {MAPBOX_ACCESS_TOKEN} = config.public;
 
+const route = useRoute()
+
 const selectedPlaceData = ref(null)
+const showPlaceCard = ref(false)
+
+const selectedRouteData = ref(null)
+const showRouteCard = ref(false)
 
 const flyToPlace = (lngLat) => {
   mapStore.map.flyTo({
@@ -58,8 +90,31 @@ const clearPlace = () => {
   selectedPlaceData.value = null
 }
 
+const clearRoute = () => {
+  showRouteCard.value = false
+}
+const setRouteData = async () => {
+  if (route.query.route) {
+    showPlaceCard.value = false
+
+    toggleSidebar()
+    selectedRouteData.value = await getRoute(route.query.route).then(res => res.data).then(el => ({id: el.id, ...el.attributes}))
+    await makeRoute()
+    showRouteCard.value = true
+    showPlaceCard.value = false
+  }
+}
+
+const getDistance = (distance) => {
+  return (distance / 1000).toFixed(1) + ' ' + 'км'
+}
+const getDuration = (duration) => {
+  return (duration / 60).toFixed(1) + ' ' + 'мин'
+}
+
 onMounted(async () => {
   const initialMap = await createMap();
+  await setRouteData()
 
   if (!map.value) {
     setMap(initialMap);
@@ -130,6 +185,7 @@ async function createMap() {
     new mapboxgl.Marker(el).setLngLat([lng, lat]).addTo(map);
 
     el.addEventListener('click', (e) => {
+      showPlaceCard.value = true
       if (selectedPlaceData.value) clearPlace()
 
       el.classList.add('active')
@@ -139,6 +195,57 @@ async function createMap() {
 
   return map;
 }
+
+const routeMarkers = ref([])
+
+const makeRoute = async () => {
+  map.value.getSource("theRoute").setData(null)
+  routeMarkers.value.map(el => el.remove())
+  routeMarkers.value = []
+
+  if (!selectedRouteData.value) return;
+  const data = selectedRouteData.value
+
+  const markersQuery = data.coords.map(({lng, lat}) => ([lng, lat])).join(';')
+
+  const res = await getRouteData(markersQuery)
+  let isStartSet = false
+
+  for (const el of res.data.waypoints) {
+    const element = document.createElement('div');
+    const text = isStartSet ? data.coords[0].streetName : data.coords[data.coords.length - 1].streetName
+    isStartSet = true
+
+    element.innerHTML = `
+    <div class="marker-content">
+        <div class="dot"></div>
+        <div class="text">${text}</div>
+    </div>
+   `
+    element.className = 'marker red';
+
+    const marker = new mapboxgl.Marker(element)
+        .setLngLat(el.location)
+        .addTo(map.value);
+
+    routeMarkers.value.push(marker);
+  }
+
+  map.value.setLayoutProperty("theRoute", "visibility", "visible");
+  map.value.getSource("theRoute").setData(res.data.routes[0].geometry);
+};
+
+watch(() => route.query, async () => {
+  await setRouteData()
+
+  if (route.query.tab === 'search') {
+    map.value.setLayoutProperty("theRoute", "visibility", "none");
+    map.value.getSource("theRoute").setData(null);
+    routeMarkers.value.map(el => el.remove())
+    routeMarkers.value = []
+
+  }
+})
 </script>
 
 <style lang="scss">
@@ -180,6 +287,33 @@ async function createMap() {
 
       &::after {
         opacity: 1;
+      }
+    }
+  }
+
+  &.red {
+    .marker-content {
+      background: red;
+      box-shadow: 0px 0px 10px 9px rgba(255, 0, 0, 0.2);
+      
+      .dot {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 15px;
+        height: 15px;
+        border-radius: 50%;
+        background: #fff;
+      }
+
+      .text {
+        position: absolute;
+        bottom: -60%;
+        white-space: nowrap;
+        font-size: 14px;
+        font-weight: bold;
+        text-shadow: 2px 0 0 #fff, -2px 0 0 #fff, 0 2px 0 #fff, 0 -2px 0 #fff, 1px 1px #fff, -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff;
       }
     }
   }
@@ -228,6 +362,17 @@ async function createMap() {
   background: #202124;
   border-radius: 10px;
   overflow: hidden;
+  box-shadow: 0px 0px 10px 2px rgba(34, 60, 80, 0.2);
+
+  &__author {
+    font-size: 16px;
+    display: inline-block;
+    margin-bottom: 5px;
+
+    span {
+      color: $green-400;
+    }
+  }
 
   .close {
     position: absolute;
@@ -312,6 +457,32 @@ async function createMap() {
     font-weight: normal;
     margin: 0;
   }
+
+  &__suptitle {
+    font-size: 18px;
+    font-weight: normal;
+    margin: 0 0 10px;
+  }
+
+  &__list {
+    padding: 0;
+    list-style: none;
+    margin: 0 0 10px;
+
+    &-item {
+      color: #9aa0a6;
+
+      &:not(:last-of-type) {
+        margin-bottom: 5px;
+      }
+    }
+  }
+
+  &__yandex-btn {
+    color: orangered;
+    font-size: 16px;
+  }
+
 
   &__description {
     color: #9aa0a6;

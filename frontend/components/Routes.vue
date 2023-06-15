@@ -3,10 +3,7 @@
     <h2 class="routes-title">Маршруты</h2>
     <div class="routes__items">
       <RouteCard
-          :start="item.coords[0].streetName"
-          :end="item.coords[item.coords.length - 1].streetName"
-          :distance="item.distance"
-          :duration="item.duration"
+          :data="item"
           v-for="item of [...data, ...data, ...data]"
           :key="item.id"
       />

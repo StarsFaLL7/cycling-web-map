@@ -22,6 +22,8 @@
 </template>
 
 <script setup>
+import {generateYandexMapsURL} from "../composables/useMapbox";
+
 const isOpen = useState("isSaveModalOpen", () => false);
 const routeData = useState("saveModalRoute", () => []);
 const {create} = useStrapi();
@@ -33,8 +35,6 @@ const addRoute = async () => {
   if (title.value.length && description.value.length) {
     try {
       const {distance, duration, routes} = routeData.value
-
-      console.log(distance, duration)
 
       const coords = routes.map(feat => {
         const {label: streetName, origin} = feat

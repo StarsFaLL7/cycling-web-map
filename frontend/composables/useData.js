@@ -1,15 +1,23 @@
 export const getRoutes = async () => {
-  const { find } = useStrapi4();
+    const {find} = useStrapi4();
 
-  return await find("routes", {
-    populate: "*",
-  });
+    return await find("routes", {
+        populate: "*",
+    });
 };
 
-export const getPlaces = async () => {
-  const { find } = useStrapi4();
+export const getRoute = async (id) => {
+    const {findOne} = useStrapi4();
 
-  return await find("places", {
-    populate: "*",
-  });
+    return await findOne("routes", id, {
+        populate: ['coords', 'author', 'createdBy']
+    });
+}
+
+export const getPlaces = async () => {
+    const {find} = useStrapi4();
+
+    return await find("places", {
+        populate: "*",
+    });
 };

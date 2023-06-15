@@ -33,3 +33,8 @@ export const getRouteData = async (query) => {
 
     return await axios.get(`https://api.mapbox.com/directions/v5/mapbox/cycling/${query}?alternatives=true&geometries=geojson&annotations=duration,distance&access_token=${MAPBOX_ACCESS_TOKEN}`)
 }
+
+
+export const generateYandexMapsURL = (points) => {
+    return `https://maps.yandex.ru/?mode=routes&rtt=bc&rtext=${points.map(el => el.reverse().join(',')).join('~')}`
+}

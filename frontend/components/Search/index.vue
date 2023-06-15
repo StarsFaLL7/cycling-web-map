@@ -38,7 +38,6 @@
 </template>
 
 <script setup>
-import axios from "axios";
 import mapboxgl from "mapbox-gl";
 import { v4 as uuidv4 } from "uuid";
 
@@ -46,8 +45,6 @@ import { storeToRefs } from "pinia";
 import { useMapStore } from "~/store/map";
 import { useGlobalStore } from "~/store/global";
 import InputAddress from "../InputAddress";
-import {getRouteData} from "../../composables/useMapbox";
-import {onMounted} from "vue";
 
 const { toggleSidebar } = useGlobalStore();
 
@@ -67,10 +64,6 @@ const { markers, map } = storeToRefs(store);
 const inputData = ref([{
   id: uuidv4()
 }])
-
-onMounted(() => {
-  console.log(map.value?.getStyle().layers)
-})
 
 const addField = (i) => {
   if (!inputData.value[i]?.label) return
