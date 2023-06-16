@@ -157,6 +157,12 @@ const makeRoute = async () => {
 
   map.value.getSource("theRoute").setData(res.data.routes[0].geometry);
   map.value.setLayoutProperty("theRoute", "visibility", "visible");
+
+  map.value.flyTo({
+    center: inputData.value[0].origin,
+    essential: true,
+    zoom: 15
+  })
 };
 
 const getMarkerCoords = (marker) => {

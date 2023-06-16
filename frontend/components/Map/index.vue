@@ -65,6 +65,9 @@ import {onMounted} from "vue";
 import mapboxgl from "mapbox-gl";
 import {XMarkIcon, GlobeEuropeAfricaIcon, PlusIcon} from "@heroicons/vue/24/solid";
 import {v4 as uuidv4} from "uuid";
+import {useWindowSize} from '@vueuse/core'
+
+const {width} = useWindowSize()
 
 
 import {storeToRefs} from "pinia";
@@ -104,6 +107,10 @@ const flyToPlace = (lngLat) => {
     essential: true,
     zoom: 15
   })
+
+  if (width.value < 600) {
+    selectedPlaceData.value = null
+  }
 }
 
 const clearPlace = () => {
@@ -365,6 +372,11 @@ watch(() => route.query, async () => {
   border-radius: 10px;
   overflow: hidden;
   box-shadow: 0px 0px 10px 2px rgba(34, 60, 80, 0.2);
+
+  @media (max-width: 600px) {
+    bottom: 20px;
+    top: auto;
+  }
 
   &__btn {
     width: 100%;
