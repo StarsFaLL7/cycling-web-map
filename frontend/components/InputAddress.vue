@@ -1,5 +1,6 @@
 <template>
-  <Multiselect ref="selectElement" @select="select" class="search-select" @search-change="debouncedHandler" searchable v-model="data" :options="result"
+  <Multiselect ref="selectElement" @select="select" class="search-select" @search-change="debouncedHandler" searchable
+               v-model="data" :options="result"
                close-on-select placeholder="Введите запрос" noOptionsText="Нет Результатов">
     <template v-slot:option="{ option }">
       <div class="search-select__option">
@@ -19,8 +20,8 @@ import {formatPlaceData, getSearchData} from "../composables/useMapbox";
 
 const store = useMapStore();
 
-const { add, remove } = store;
-const { markers, map } = storeToRefs(store);
+const {add, remove} = store;
+const {markers, map} = storeToRefs(store);
 
 const params = {
   language: 'ru',
@@ -30,24 +31,26 @@ const params = {
 
 const selectElement = ref()
 
-const emits = defineEmits(['selected', 'drag'])
+const emits = defineEmits(['selected', 'dragend', 'drag'])
 
 const select = () => {
   emits('selected', data.value)
-  const marker = markers.value[props.uuid]
-
-  marker.on('dragend', async () => {
-    const {lng, lat} = marker.getLngLat()
-
-    const result = await getSearchData(`${lng},${lat}`, params).then(res => formatPlaceData(res.data.features[0]))
-    selectElement.value.select(result)
-  })
-
-  marker.on('dragstart', () => emits('drag'))
+  // const marker = markers.value[props.uuid]
+  //
+  // marker.on('dragend', async () => {
+  //   const {lng, lat} = marker.getLngLat()
+  //
+  //   const result = await getSearchData(`${lng},${lat}`, params).then(res => formatPlaceData(res.data.features[0]))
+  //   selectElement.value.select(result)
+  //   emits('dragend')
+  // })
+  //
+  // marker.on('dragstart', () => emits('drag'))
 }
 
 const props = defineProps({
-  uuid: String
+  uuid: String,
+  origin: Array
 })
 
 const result = ref([])
@@ -73,6 +76,21 @@ const debouncedHandler = debounce(async query => {
 
   result.value = removeDuplicatesByObjKeys(data, ['label', 'address'])
 }, 300);
+
+const updateOrigin = async () => {
+  if (props.origin) {
+    const response = await getSearchData(props.origin.join(','), params).then(res => formatPlaceData(res.data.features[0]))
+    selectElement.value.select(response)
+  }
+}
+
+onMounted(async () => {
+  await updateOrigin()
+})
+
+watch(() => props.origin, async () => {
+  await updateOrigin()
+})
 </script>
 
 <style src="@vueform/multiselect/themes/default.css"></style>

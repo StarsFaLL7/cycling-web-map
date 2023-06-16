@@ -2,11 +2,12 @@
   <div class="sidebar__search">
     <div class="search__block">
       <div class="search__block-item" v-for="(item, i) of inputData" :key="item.id">
-        <InputAddress @selected="onSelect($event, i)" :uuid="item.id" @drag="removeRoute" />
+        <InputAddress @selected="onSelect($event, item.id)" :uuid="item.id" @drag="hideRoute" @dragend="updateRoute"
+                      :origin="item?.get?.origin"/>
         <button
-          v-if="!inputData[i]?.label || i !== inputData.length - 1"
-          @click="removeField(i)"
-          class="search__block-btn remove"
+            v-if="!inputData[i]?.label || i !== inputData.length - 1"
+            @click="removeField(i)"
+            class="search__block-btn remove"
         >
           <span class="material-symbols-outlined">
             remove
@@ -28,9 +29,9 @@
     </button>
     <div class="spacer"></div>
     <button
-      class="sidebar__search-btn"
-      v-if="user && inputData.length > 1"
-      @click="saveRoute"
+        class="sidebar__search-btn"
+        v-if="user && inputData.length > 1"
+        @click="saveRoute"
     >
       Сохарнить маршрут
     </button>
@@ -39,16 +40,19 @@
 
 <script setup>
 import mapboxgl from "mapbox-gl";
-import { v4 as uuidv4 } from "uuid";
+import {v4 as uuidv4} from "uuid";
 
-import { storeToRefs } from "pinia";
-import { useMapStore } from "~/store/map";
-import { useGlobalStore } from "~/store/global";
+import {storeToRefs} from "pinia";
+import {useMapStore} from "~/store/map";
+import {useGlobalStore} from "~/store/global";
 import InputAddress from "../InputAddress";
+import {formatPlaceData, getSearchData} from "../../composables/useMapbox";
 
-const { toggleSidebar } = useGlobalStore();
+const {toggleSidebar} = useGlobalStore();
 
 const user = useStrapiUser();
+
+const route = useRoute()
 
 const routeMarkers = ref([]);
 const routeData = ref({
@@ -58,10 +62,10 @@ const routeData = ref({
 
 const store = useMapStore();
 
-const { add, remove } = store;
-const { markers, map } = storeToRefs(store);
+const {add, remove, getMarker} = store;
+const {markers, map} = storeToRefs(store);
 
-const inputData = ref([{
+const inputData = useState('routesInputData', () => [{
   id: uuidv4()
 }])
 
@@ -78,19 +82,58 @@ const removeField = (i) => {
   inputData.value.splice(i, 1)
 }
 
-const onSelect = (data, i) => {
-  inputData.value[i] = {id: inputData.value[i].id, ...data}
+const onSelect = (data, id) => {
+  // inputData.value[i] = {id: inputData.value[i].id, ...data}
+  inputData.value = inputData.value.map(obj => {
+    if (obj.id === id) {
+      return {id, ...data};
+    }
+    return obj;
+  });
 
-  const marker = new mapboxgl.Marker({ color: "#3d8934", draggable: true }).setLngLat(data.origin)
-  add(inputData.value[i].id, marker)
+  const element = document.createElement('div');
+
+  element.className = 'marker red';
+  element.setAttribute('data-id', id)
+  element.innerHTML = `
+    <div class="marker-content">
+        <div class="dot"></div>
+        <div class="text">${data.label}</div>
+    </div>
+   `
+
+  const marker = new mapboxgl.Marker({element, draggable: true})
+      .setLngLat(data.origin)
+
+
+  marker.on('dragend', async () => {
+    const {lng, lat} = marker.getLngLat()
+    console.log(lng, lat)
+
+    inputData.value = inputData.value.map(obj => {
+      if (obj.id === id) {
+        return {
+          ...obj, get: {
+            origin: [lng, lat]
+          }
+        };
+      }
+      return obj;
+    });
+
+    await updateRoute()
+  })
+
+  marker.on('dragstart', () => hideRoute())
+
+  add(id, marker)
 }
 
 const makeRoute = async () => {
-  if (inputData.value.filter(el => el?.label?.length).length < 2 ) return;
+  if (inputData.value.filter(el => el.origin).length < 2) return;
+  map.value.setLayoutProperty("theRoute", "visibility", "none");
 
-  const markersQuery = Object.values(markers.value)
-    .map((m) => getMarkerCoords(m).join(","))
-    .join(";");
+  const markersQuery = inputData.value.map(el => el.origin.join(',')).join(';')
 
   const res = await getRouteData(markersQuery)
   const routes = res.data.routes
@@ -100,30 +143,40 @@ const makeRoute = async () => {
     routeData.value.distance += routes[i].distance
   }
 
-  for (const el of res.data.waypoints) {
-    const marker = new mapboxgl.Marker({ color: "red" })
-      .setLngLat(el.location)
-      .addTo(map.value);
+  for (let i = 0; i < res.data.waypoints.length; i++) {
+    const el = res.data.waypoints[i]
 
-    routeMarkers.value.push(marker);
+    const id = inputData.value[i].id
+
+    const element = document.querySelector(`[data-id="${id}"]`)
+    element.classList.add('red')
+
+    const text = element.querySelector('.text')
+    text.textContent = inputData.value[i].label
+
+    const marker = getMarker(id)
+    marker.setLngLat(el.location)
   }
 
-  map.value.setLayoutProperty("theRoute", "visibility", "visible");
   map.value.getSource("theRoute").setData(res.data.routes[0].geometry);
+  map.value.setLayoutProperty("theRoute", "visibility", "visible");
 };
 
 const getMarkerCoords = (marker) => {
-  const { lng, lat } = marker._lngLat;
+  const {lng, lat} = marker._lngLat;
   return [lng, lat];
 };
 
 const currentRoute = useState("saveModalRoute");
 
-const removeRoute =() => {
-    routeMarkers.value.map((m) => m.remove());
-    routeMarkers.value = [];
+const updateRoute = async () => {
+  if (inputData.value.filter(el => el.origin).length > 1) {
+    await makeRoute()
+  }
+}
 
-    map.value.setLayoutProperty("theRoute", "visibility", "none");
+const hideRoute = () => {
+  map.value.setLayoutProperty("theRoute", "visibility", "none");
 }
 
 const saveRoute = () => {
@@ -136,6 +189,12 @@ const saveRoute = () => {
 
   useToggleSaveModal();
 };
+
+watch(inputData, async () => {
+  if (inputData.value.filter(el => el.origin).length < 2) return;
+
+  await makeRoute()
+})
 </script>
 
 <style lang="scss">

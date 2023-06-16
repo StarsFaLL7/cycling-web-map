@@ -26,6 +26,7 @@ export const useMapStore = defineStore({
     },
   },
   getters: {
-    allMarkers: (state) => state.markers
+    allMarkers: (state) => state.markers,
+    getMarker: (state) => (id) => state.markers[id]
   },
 });
