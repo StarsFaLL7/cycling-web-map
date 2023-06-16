@@ -1,5 +1,6 @@
 <template>
   <div class="app">
+    <VitePwaManifest />
     <NuxtLayout>
       <NuxtPage />
       <AuthForm :open="useAuthOpen" @close-modal="useToggleAuth" />

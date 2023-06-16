@@ -1,15 +1,15 @@
 <template>
   <div class="profile" v-if="user">
     <img
-      src="https://rare-gallery.com/mocahbig/473896-landscape-green-nature-Switzerland-trees-mountains.jpg"
-      class="profile__image"
+        src="https://rare-gallery.com/mocahbig/473896-landscape-green-nature-Switzerland-trees-mountains.jpg"
+        class="profile__image"
     />
     <div class="container">
       <div class="profile__header">
         <div class="profile__header-avatar">
           <img
-            src="https://aroundprague.cz/assets/images/resources/18069/cyclist-4369402-1280.jpg"
-            alt=""
+              src="https://previews.123rf.com/images/sombrecanari/sombrecanari2004/sombrecanari200400076/145778943-silhouette-cartoon-illustration-of-boy-riding-on-bike-in-vector-design-cheerful-vintage-style.jpg"
+              alt=""
           />
         </div>
         <div class="profile__header-content">
@@ -23,9 +23,9 @@
             <div>
               <div class="profile__header-stats">
                 <div
-                  class="profile__header-stat"
-                  v-for="stat of stats"
-                  :key="stat.label"
+                    class="profile__header-stat"
+                    v-for="stat of stats"
+                    :key="stat.label"
                 >
                   <div class="profile__header-stat-value">{{ stat.value }}</div>
                   <div class="profile__header-stat-label">{{ stat.label }}</div>
@@ -44,32 +44,32 @@
     </div>
     <div class="profile__content">
       <div class="container">
-        <ProfileCard title="Обо мне">
-          <ProfileAbout />
-        </ProfileCard>
-        <ProfileCard title="Достижения">
-          <Slider :slidesPerView="4" :spaceBetween="20">
-            <swiper-slide v-for="item of achievements" :key="item">
-              <AchievementCard :title="item" />
-            </swiper-slide>
-          </Slider>
-        </ProfileCard>
-        <ProfileCard title="Последние маршруты" class="routes">
-          <Slider :slidesPerView="2.2" :spaceBetween="20">
-            <swiper-slide v-for="item of achievements" :key="item">
-              <RouteCard />
-            </swiper-slide>
-          </Slider>
-        </ProfileCard>
+<!--        <ProfileCard title="Обо мне">-->
+<!--          <ProfileAbout/>-->
+<!--        </ProfileCard>-->
+<!--        <ProfileCard title="Достижения">-->
+<!--          <Slider :slidesPerView="4" :spaceBetween="20">-->
+<!--            <swiper-slide v-for="item of achievements" :key="item">-->
+<!--              <AchievementCard :title="item"/>-->
+<!--            </swiper-slide>-->
+<!--          </Slider>-->
+<!--        </ProfileCard>-->
+        <!--        <ProfileCard title="Последние маршруты" class="routes">-->
+        <!--          <Slider :slidesPerView="2.2" :spaceBetween="20">-->
+        <!--            <swiper-slide v-for="item of achievements" :key="item">-->
+        <!--              <RouteCard />-->
+        <!--            </swiper-slide>-->
+        <!--          </Slider>-->
+        <!--        </ProfileCard>-->
         <ProfileCard title="Сохранённые маршруты" class="routes">
-          <Slider :slidesPerView="2.2" :spaceBetween="20">
-            <swiper-slide v-for="item of achievements" :key="item">
-              <RouteCard />
+          <Slider :slidesPerView="getSlideCount()" :spaceBetween="20">
+            <swiper-slide v-for="item of routes" :key="item">
+              <RouteCard :data="item"/>
             </swiper-slide>
           </Slider>
         </ProfileCard>
         <ProfileCard title="Статистика" class="stats">
-          <ProfileStats />
+          <ProfileStats/>
         </ProfileCard>
       </div>
     </div>
@@ -77,38 +77,49 @@
 </template>
 
 <script setup>
-import { SwiperSlide } from "swiper/vue";
+import {SwiperSlide} from "swiper/vue";
+import {useWindowSize} from "@vueuse/core";
 
-const { logout } = useStrapiAuth();
+const {width} = useWindowSize()
+
+const {logout} = useStrapiAuth();
 const router = useRouter();
+const user = useStrapiUser();
+
+const routes = ref(await getUserRoutes().then(res => res.data.map(el => ({id: el.id, ...el.attributes}))))
+console.log(routes.value)
 
 const onLogout = async () => {
-  router.push({ path: "/" });
+  router.push({path: "/"});
   await logout();
 };
 
 definePageMeta({
-  layout: "profile",
   middleware: ["auth"],
 });
+
+const date1 = new Date(user.value.createdAt);
+const date2 = new Date();
+const diffTime = Math.abs(date2 - date1);
+const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
 const stats = ref([
   {
     label: "Маршрутов",
-    value: 20,
+    value: routes.value.length,
   },
   {
     label: "Расстояние",
-    value: "18.7 км",
+    value: routes.value.reduce((acc, val) => acc += +(val.distance / 1000).toFixed(1), 0) + ' ' + 'км',
   },
   {
-    label: "На сайте",
-    value: "20 дней",
+    label: "Дней на сайте",
+    value: diffDays
   },
-  {
-    label: "Отзывов",
-    value: 12,
-  },
+  // {
+  //   label: "Отзывов",
+  //   value: 12,
+  // },
 ]);
 
 const achievements = ref([
@@ -119,11 +130,12 @@ const achievements = ref([
   "Первый маршрут",
 ]);
 
-const user = useStrapiUser();
-
-onMounted(() => {
-  console.log(user.value);
-});
+const getSlideCount = () => {
+  if (width.value > 1300) return 4
+  else if (width.value > 1000) return 3
+  else if (width.value > 800) return 2
+  else return 1.2
+}
 </script>
 
 <style lang="scss" scoped>
@@ -136,6 +148,14 @@ onMounted(() => {
     height: 250px;
     object-position: center;
     object-fit: cover;
+
+    @media (max-width: 1300px) {
+      height: 150px;
+    }
+  }
+
+  .routes {
+    grid-column: 1 / -1;
   }
 
   &__header {
@@ -144,6 +164,20 @@ onMounted(() => {
     margin-bottom: -125px;
     transform: translateY(-50%);
 
+    @media (max-width: 1300px) {
+      transform: none;
+      margin-bottom: 50px;
+      flex-wrap: wrap;
+      justify-content: flex-start;
+    }
+
+    @media (max-width: 900px) {
+      flex-direction: column;
+      align-items: center;
+      transform: translateY(-10%);
+      margin-bottom: -20px;
+    }
+
     &-more {
       align-self: center;
       margin-left: auto;
@@ -151,6 +185,16 @@ onMounted(() => {
       transform: translateY(calc(50% + 20px));
       display: flex;
       gap: 10px;
+      
+      @media (max-width: 1300px) {
+        flex-direction: column;
+        transform: none;
+        margin: 0;
+      }
+
+      @media (max-width: 600px) {
+        width: 100%;
+      }
 
       .btn {
         color: #fff;
@@ -199,9 +243,12 @@ onMounted(() => {
       .profile__name {
         font-size: 30px;
         font-weight: 700;
-        margin-bottom: 10px;
         color: #fff;
         margin: 0 0 5px;
+        
+        @media (max-width: 1300px) {
+          color: #000;
+        }
       }
 
       .profile__status {
@@ -209,6 +256,10 @@ onMounted(() => {
         color: #fff;
         margin: 0;
         opacity: 0.7;
+
+        @media (max-width: 1300px) {
+          color: gray;
+        }
       }
     }
 
@@ -246,6 +297,7 @@ onMounted(() => {
   &__content {
     background: #f7f7f7;
     padding: 40px 0 100px;
+
     .container {
       display: grid;
       grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);

@@ -20,6 +20,7 @@
     "@heroicons/vue": "^2.0.17",
     "@mapbox/mapbox-gl-geocoder": "^5.0.1",
     "@pinia/nuxt": "^0.4.7",
+    "@vite-pwa/nuxt": "^0.1.0",
     "@vueform/multiselect": "^2.6.2",
     "@vueuse/core": "^10.1.2",
     "animate.css": "^4.1.1",

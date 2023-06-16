@@ -28,6 +28,8 @@ const isOpen = useState("isSaveModalOpen", () => false);
 const routeData = useState("saveModalRoute", () => []);
 const {create} = useStrapi();
 
+const user = useStrapiUser()
+
 const title = ref("");
 const description = ref("");
 
@@ -51,7 +53,8 @@ const addRoute = async () => {
         description: description.value,
         distance,
         duration,
-        coords
+        coords,
+        author: user.value.id
       });
       useToggleSaveModal();
     } catch (e) {

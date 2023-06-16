@@ -35,6 +35,7 @@ const props = defineProps({
 
   &__content {
     padding: 20px;
+    overflow: auto;
   }
 
   &.stats {

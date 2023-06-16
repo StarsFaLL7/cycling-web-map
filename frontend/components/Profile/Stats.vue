@@ -112,5 +112,8 @@ const data = ref({
 <style lang="scss" scoped>
 .chart {
   height: 300px;
+  min-width: 600px;
+  overflow: auto;
+  padding: 0 20px;
 }
 </style>

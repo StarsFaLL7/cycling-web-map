@@ -6,6 +6,18 @@ export const getRoutes = async () => {
     });
 };
 
+export const getUserRoutes = async () => {
+    const {find} = useStrapi4();
+    const user = useStrapiUser()
+
+    return await find("routes", {
+        populate: "*",
+        filters: {
+            author: user.value.id
+        }
+    });
+};
+
 export const getRoute = async (id) => {
     const {findOne} = useStrapi4();
 
