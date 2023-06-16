@@ -27,12 +27,20 @@
   padding-top: 50px;
   background: #000;
 
+  @media (max-width: 800px) {
+    padding-top: 25px;
+  }
+
   &__copyright {
     color: #fff;
     text-align: center;
     opacity: 0.6;
     padding: 15px;
     background: #343434;
+
+    @media (max-width: 800px) {
+      font-size: 12px;
+    }
   }
 
   .container {
@@ -41,6 +49,13 @@
     align-items: flex-start;
     margin-bottom: 40px;
     height: 200px;
+    gap: 30px;
+
+    @media (max-width: 800px) {
+      flex-direction: column;
+      gap: 0;
+      height: auto;
+    }
   }
 
   &__logo {
@@ -61,12 +76,20 @@
     padding: 0;
     margin: 0;
 
+    @media (max-width: 1000px) {
+      flex-direction: column;
+      gap: 0;
+    }
+
     &-item {
-      padding: 0;
+      padding: 0 0 5px;
       font-size: 20px;
       text-transform: uppercase;
       position: relative;
-      padding-bottom: 5px;
+
+      @media (max-width: 1000px) {
+        font-size: 14px;
+      }
 
       &::after {
         content: "";

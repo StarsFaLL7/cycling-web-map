@@ -20,6 +20,10 @@
 
     // color: #1f769c;
     color: inherit;
+
+    @media (max-width: 1000px) {
+      font-size: 18px;
+    }
   }
 }
 </style>

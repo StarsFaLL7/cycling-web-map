@@ -49,6 +49,10 @@ const items = ref([
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 60px;
+    
+    @media (max-width: 1200px) {
+      grid-template-columns: 1fr;
+    }
   }
 }
 </style>

@@ -1,6 +1,15 @@
 <template>
   <div>
     <div id="map"></div>
+    <dialog class="place-dialog" ref="dialog" v-show="routesInputData.filter(el => el.origin).length">
+      <div class="place-dialog__overflow" @click="dialog.close()"></div>
+      <div class="place-dialog__content">
+        <h3 class="place-dialog__title">После какого места вы бы хотели посетить парк?</h3>
+        <ul class="place-dialog__list">
+          <li class="place-dialog__list-item" v-for="(item,i) of routesInputData" :key="i" @click="addPlace(i, selectedPlaceData.origin)">– {{ item.label }}</li>
+        </ul>
+      </div>
+    </dialog>
     <Transition name="slide" mode="out-in">
       <div class="map-card card" v-if="showPlaceCard && selectedPlaceData" :key="selectedPlaceData.title">
         <div class="close" @click="clearPlace">
@@ -15,6 +24,7 @@
           <p class="map-card__description">
             {{ selectedPlaceData.description }}
           </p>
+          <UIButton class="map-card__btn" @click="dialog.showModal()" v-show="routesInputData.filter(el => el.origin).length">Добавить в маршрут</UIButton>
         </div>
       </div>
       <div class="map-card card" v-else-if="showRouteCard && selectedRouteData" :key="selectedRouteData.title">
@@ -53,7 +63,7 @@
 <script setup>
 import {onMounted} from "vue";
 import mapboxgl from "mapbox-gl";
-import {XMarkIcon, GlobeEuropeAfricaIcon} from "@heroicons/vue/24/solid";
+import {XMarkIcon, GlobeEuropeAfricaIcon, PlusIcon} from "@heroicons/vue/24/solid";
 import {v4 as uuidv4} from "uuid";
 
 
@@ -63,6 +73,7 @@ import {useMapStore} from "~/store/map";
 import {useState} from "nuxt/app";
 import {formatPlaceData, getSearchData} from "../../composables/useMapbox";
 
+const dialog = ref()
 
 const store = useGlobalStore();
 const {toggleSidebar} = store;
@@ -127,6 +138,15 @@ const getDistance = (distance) => {
 }
 const getDuration = (duration) => {
   return (duration / 60).toFixed(1) + ' ' + 'мин'
+}
+
+const addPlace = (i, {lng, lat}) => {
+  const routes =  routesInputData.value
+  routesInputData.value = [...routes.slice(0, i + 1), {
+    id: uuidv4(),
+    get: {origin: [lng, lat]}
+  } , ...routes.slice(i + 1)]
+  dialog.value.close()
 }
 
 onMounted(async () => {
@@ -346,6 +366,17 @@ watch(() => route.query, async () => {
   overflow: hidden;
   box-shadow: 0px 0px 10px 2px rgba(34, 60, 80, 0.2);
 
+  &__btn {
+    width: 100%;
+    color: #fff !important;
+    background: $green-400 !important;
+    border: none !important;
+
+    &:hover {
+      background: $green-500 !important;
+    }
+  }
+
   &__author {
     font-size: 16px;
     display: inline-block;
@@ -403,7 +434,7 @@ watch(() => route.query, async () => {
   }
 
   &__content {
-    padding: 25px;
+    padding: 30px 25px 25px;
     color: #fff;
     position: relative;
 
@@ -469,7 +500,60 @@ watch(() => route.query, async () => {
   &__description {
     color: #9aa0a6;
   }
+}
 
+.place-dialog {
+  min-width: 100vw;
+  min-height: 100vh;
+  background: transparent;
+
+  &__overflow {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    background: rgba(0, 0, 0, .3);
+  }
+
+  &__title {
+    margin: 0 0 20px;
+    font-weight: normal;
+    font-size: 20px;
+  }
+
+  &__list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    &-item {
+      padding: 0;
+      color: #9aa0a6;
+      transition: all .2s;
+      cursor: pointer;
+
+      &:hover {
+        color: $green-400;
+      }
+
+      &:not(:last-of-type) {
+        margin-bottom: 10px;
+      }
+    }
+  }
+
+  &__content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 25px;
+    background: #202124;
+    color: #fff;
+    border-radius: 10px;
+    width: 400px;
+  }
 
 }
 </style>

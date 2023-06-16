@@ -24,13 +24,10 @@
         </button>
       </div>
     </div>
-    <button class="sidebar__search-btn" @click="makeRoute">
-      Построить маршрут
-    </button>
     <div class="spacer"></div>
     <button
         class="sidebar__search-btn"
-        v-if="user && inputData.length > 1"
+        v-if="user && !saveDisabled"
         @click="saveRoute"
     >
       Сохарнить маршрут
@@ -83,7 +80,6 @@ const removeField = (i) => {
 }
 
 const onSelect = (data, id) => {
-  // inputData.value[i] = {id: inputData.value[i].id, ...data}
   inputData.value = inputData.value.map(obj => {
     if (obj.id === id) {
       return {id, ...data};
@@ -108,7 +104,6 @@ const onSelect = (data, id) => {
 
   marker.on('dragend', async () => {
     const {lng, lat} = marker.getLngLat()
-    console.log(lng, lat)
 
     inputData.value = inputData.value.map(obj => {
       if (obj.id === id) {
@@ -129,11 +124,13 @@ const onSelect = (data, id) => {
   add(id, marker)
 }
 
+const saveDisabled = computed(() => (inputData.value.filter(el => el.origin).length !== inputData.value.length) || inputData.value.length < 2)
+
 const makeRoute = async () => {
-  if (inputData.value.filter(el => el.origin).length < 2) return;
+  if (saveDisabled.value) return;
   map.value.setLayoutProperty("theRoute", "visibility", "none");
 
-  const markersQuery = inputData.value.map(el => el.origin.join(',')).join(';')
+  const markersQuery = inputData.value.map(el => el?.origin.join(','))?.join(';')
 
   const res = await getRouteData(markersQuery)
   const routes = res.data.routes
@@ -191,8 +188,6 @@ const saveRoute = () => {
 };
 
 watch(inputData, async () => {
-  if (inputData.value.filter(el => el.origin).length < 2) return;
-
   await makeRoute()
 })
 </script>

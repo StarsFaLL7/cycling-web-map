@@ -58,7 +58,6 @@ const props = defineProps({
   }
 
   &-content {
-    position: relative;
     z-index: 2;
     color: #000;
     background: $green-50;
@@ -70,12 +69,23 @@ const props = defineProps({
     border-radius: 10px;
     height: 140px;
 
+    @media (max-width: 1200px) {
+      width: 100%;
+    }
+
     h3 {
       margin: 0 0 10px;
       color: $green-400;
+
+      @media (max-width: 1000px) {
+        font-size: 16px;
+      }
     }
     p {
       margin: 0;
+      @media (max-width: 1000px) {
+        font-size: 14px;
+      }
     }
   }
 

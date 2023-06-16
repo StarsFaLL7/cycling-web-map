@@ -1,13 +1,14 @@
 <template>
-  <div>
+  <div class="app">
     <NuxtLayout>
       <NuxtPage />
+      <AuthForm :open="useAuthOpen" @close-modal="useToggleAuth" />
     </NuxtLayout>
-    <AuthForm :open="useAuthOpen" @close-modal="useToggleAuth" />
   </div>
 </template>
 
-<script setup></script>
+<script setup>
+</script>
 
 <style lang="scss">
 @import url("https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;500;600;700&family=Nunito:wght@300;400;500;600;700&display=swap");
@@ -17,6 +18,12 @@ body {
   min-height: 100vh;
   font-family: "Exo 2", sans-serif;
   color: #000;
+}
+
+.app {
+  width: 100vw;
+  overflow: hidden;
+  position: relative;
 }
 
 *,
@@ -34,6 +41,14 @@ body {
   width: 100%;
   margin: 0 auto;
   padding: 0 80px;
+
+  @media (max-width: 1000px) {
+    padding: 0 40px;
+  }
+
+  @media (max-width: 800px) {
+    padding: 0 20px;
+  }
 }
 
 .title {
@@ -42,6 +57,12 @@ body {
   margin: 0 0 20px;
   font-weight: 500;
   font-size: 32px;
+  padding: 0 20px;
+
+  @media (max-width: 800px) {
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
 }
 
 .btn {

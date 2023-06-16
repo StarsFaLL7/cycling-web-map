@@ -14,7 +14,6 @@
           <UIButton>Перейти к карте</UIButton>
         </nuxt-link>
       </div>
-      <!-- <img class="rider-img" src="~/assets/images/bike-rider.png" alt="" /> -->
     </div>
   </div>
 </template>
@@ -37,6 +36,10 @@
     overflow: hidden;
     position: relative;
     box-shadow: 0px 0px 7px 5px rgba(176, 212, 130, 0.38);
+
+    @media (max-width: 1000px) {
+      width: 100%;
+    }
 
     &::after {
       content: "";
@@ -74,6 +77,14 @@
     font-size: 40px;
     position: relative;
     z-index: 2;
+
+    @media (max-width: 1000px) {
+      font-size: 28px;
+    }
+
+    @media (max-width: 800px) {
+      font-size: 20px;
+    }
 
     span {
       color: $green-600;

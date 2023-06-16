@@ -45,8 +45,6 @@
         </g>
       </svg>
     </div>
-    <!-- <h1 class="home__banner-text">Найди свой идеальный велосипедный маршрут</h1>
-    <nuxt-link to="/map"><button class="btn">Начать поездку</button></nuxt-link> -->
   </div>
 </template>
 
@@ -115,6 +113,15 @@ const scrollToNextSection = () => {
     margin: 0 0 50px;
     text-transform: uppercase;
     letter-spacing: 2px;
+
+    @media (max-width: 1200px) {
+      font-size: 28px;
+    }
+
+    @media (max-width: 800px) {
+      font-size: 20px;
+      font-weight: bold;
+    }
 
     span {
       // background: rgba(176, 212, 130, 0.9);
