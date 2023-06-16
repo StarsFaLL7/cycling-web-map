@@ -126,7 +126,9 @@ const setRouteData = async () => {
   if (route.query.route) {
     showPlaceCard.value = false
 
-    toggleSidebar()
+    if (isSidebarOpen.value) {
+      toggleSidebar()
+    }
 
     selectedRouteData.value = await getRoute(route.query.route).then(res => res.data).then(el => ({id: el.id, ...el.attributes}))
 

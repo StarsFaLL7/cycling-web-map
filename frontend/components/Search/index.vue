@@ -194,7 +194,9 @@ const saveRoute = () => {
 };
 
 watch(inputData, async () => {
-  await makeRoute()
+  if (!saveDisabled.value) {
+    await makeRoute()
+  }
 })
 </script>
 
