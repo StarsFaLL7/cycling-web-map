@@ -21,7 +21,7 @@
         </div>
 
         <div class="login">
-          <form @submit.prevent="onRegister">
+          <form @submit.prevent="onLogin">
             <label for="chk" aria-hidden="true">Вход</label>
             <input v-model="loginData.email" type="email" name="email" placeholder="Email" required="">
             <input v-model="loginData.password" type="password" name="pswd" placeholder="Password" required="">
